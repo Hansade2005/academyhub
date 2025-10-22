@@ -4,11 +4,7 @@ import fs from 'fs';
 import pdf from 'pdf-parse';
 import mammoth from 'mammoth';
 
-export const config = {
-  api: {
-    bodyParser: false,
-  },
-};
+export const runtime = 'nodejs';
 
 interface SkillPassportData {
   name: string;
