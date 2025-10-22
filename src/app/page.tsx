@@ -4,6 +4,7 @@ import { motion, AnimatePresence, useScroll, useTransform, useInView, animate, u
 import { Menu, X, Star, Mail, GraduationCap, Globe, ArrowRightLeft, Building, Zap, CheckCircle, Twitter, Linkedin, Github, Share2, Users, Award, TrendingUp, Target, UserPlus, Briefcase, ChevronDown } from 'lucide-react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import Chatbot from '@/components/Chatbot';
 
 // --- ACCORDION COMPONENT (Lifted outside main export) ---
 const AccordionItem: React.FC<{ question: string; answer: string; }> = ({ question, answer }) => {
@@ -885,33 +886,7 @@ export default function Home() {
         </motion.section>
 
         {/* Floating CTA - Enhanced */}
-        <motion.div
-          className="fixed bottom-8 right-8 z-40"
-          initial={{ scale: 0, rotate: -180 }}
-          animate={{ scale: 1, rotate: 0 }}
-          transition={{ delay: 2, type: "spring", stiffness: 260, damping: 20 }}
-        >
-          <motion.button
-            className="relative bg-gradient-to-r from-indigo-600 to-purple-600 text-white p-5 rounded-full shadow-2xl group"
-            whileHover={{ scale: 1.15, rotate: 10 }}
-            whileTap={{ scale: 0.9 }}
-            animate={{
-              boxShadow: [
-                '0 0 20px rgba(139, 92, 246, 0.5)',
-                '0 0 40px rgba(139, 92, 246, 0.8)',
-                '0 0 20px rgba(139, 92, 246, 0.5)',
-              ],
-            }}
-            transition={{ duration: 2, repeat: Infinity }}
-          >
-            <GraduationCap size={28} />
-            <motion.div
-              className="absolute inset-0 rounded-full bg-white opacity-0 group-hover:opacity-20"
-              animate={{ scale: [1, 1.5, 1] }}
-              transition={{ duration: 1, repeat: Infinity }}
-            />
-          </motion.button>
-        </motion.div>
+        <Chatbot />
 
         <Footer />
       </div>
