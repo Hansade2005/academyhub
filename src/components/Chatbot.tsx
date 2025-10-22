@@ -72,7 +72,7 @@ export default function Chatbot() {
       const data = await response.json();
       const assistantMessage: Message = {
         role: 'assistant',
-        content: data.response || 'Sorry, I encountered an error. Please try again.',
+        content: data.completion || 'Sorry, I encountered an error. Please try again.',
         timestamp: new Date()
       };
 
@@ -81,7 +81,7 @@ export default function Chatbot() {
       console.error('Chatbot error:', error);
       const errorMessage: Message = {
         role: 'assistant',
-        content: 'Sorry, I\'m having trouble connecting right now. Please try again later.',
+        content: 'Sorry, I\\'m having trouble connecting right now. Please try again later.',
         timestamp: new Date()
       };
       setMessages(prev => [...prev, errorMessage]);
