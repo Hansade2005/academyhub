@@ -9,6 +9,7 @@ import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Upload, FileText, User, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
+import PDFViewer from '@/components/PDFViewer';
 
 export default function SkillPassportPage() {
   const [loading, setLoading] = useState(false);
@@ -148,6 +149,12 @@ export default function SkillPassportPage() {
                     </p>
                   )}
                 </div>
+                {file && file.type === 'application/pdf' && (
+                  <div className="space-y-2">
+                    <Label>PDF Preview</Label>
+                    <PDFViewer file={file} />
+                  </div>
+                )}
                 <Button
                   onClick={handleFileUpload}
                   disabled={!file || loading}

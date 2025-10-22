@@ -66,7 +66,8 @@
     "openai": "latest",
     "pdf-parse": "latest",
     "mammoth": "latest",
-    "formidable": "latest"
+    "formidable": "latest",
+    "pdfjs-dist": "latest"
   },
   "devDependencies": {
     "@types/react": "^18.2.43",
