@@ -46,7 +46,7 @@ export default function Chatbot() {
     setIsTyping(true);
 
     try {
-      const response = await fetch('https://api.a0.dev/chat/completions', {
+      const response = await fetch('https://api.a0.dev/ai/llm', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -72,7 +72,7 @@ export default function Chatbot() {
       const data = await response.json();
       const assistantMessage: Message = {
         role: 'assistant',
-        content: data.choices?.[0]?.message?.content || 'Sorry, I encountered an error. Please try again.',
+        content: data.response || 'Sorry, I encountered an error. Please try again.',
         timestamp: new Date()
       };
 
