@@ -22,7 +22,9 @@ interface SkillPassportData {
 // Dynamically import pdf-parse (avoids DOMMatrix error)
 const extractTextFromPDF = async (buffer: Buffer): Promise<string> => {
   const pdfParse = await import('pdf-parse') as any;
-  const data = await pdfParse(buffer);
+  const { Readable } = await import('stream');
+  const stream = Readable.from(buffer);
+  const data = await pdfParse(stream);
   return data.text;
 };
 
