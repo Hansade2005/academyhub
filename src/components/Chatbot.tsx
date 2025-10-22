@@ -3,6 +3,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { MessageCircle, X, Send, GraduationCap } from 'lucide-react';
+import { useLocalStorage } from '@/hooks/useLocalStorage';
 
 interface Message {
   role: 'user' | 'assistant';
@@ -12,7 +13,7 @@ interface Message {
 
 export default function Chatbot() {
   const [isOpen, setIsOpen] = useState(false);
-  const [messages, setMessages] = useState<Message[]>([
+  const [messages, setMessages] = useLocalStorage<Message[]>('chatbot-messages', [
     {
       role: 'assistant',
       content: "Hello! I'm your AI assistant for The 3rd Academy. How can I help you today?",
@@ -81,7 +82,7 @@ export default function Chatbot() {
       console.error('Chatbot error:', error);
       const errorMessage: Message = {
         role: 'assistant',
-        content: 'Sorry, I\\'m having trouble connecting right now. Please try again later.',
+        content: "Sorry, I'm having trouble connecting right now. Please try again later.",
         timestamp: new Date()
       };
       setMessages(prev => [...prev, errorMessage]);
@@ -102,6 +103,8 @@ export default function Chatbot() {
       setTimeout(() => inputRef.current?.focus(), 300);
     }
   };
+
+  const quickReplies = ['About Us', 'Contact', 'Pricing', 'Help'];
 
   return (
     <>
@@ -201,6 +204,22 @@ export default function Chatbot() {
                 </motion.div>
               )}
               <div ref={messagesEndRef} />
+            </div>
+
+            {/* Quick Replies */}
+            <div className="px-4 pb-2 flex flex-wrap gap-2">
+              {quickReplies.map((reply) => (
+                <motion.button
+                  key={reply}
+                  onClick={() => sendMessage(reply)}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="bg-white/10 hover:bg-white/20 text-gray-300 px-3 py-1 rounded-full text-sm transition-colors"
+                  disabled={isTyping}
+                >
+                  {reply}
+                </motion.button>
+              ))}
             </div>
 
             {/* Input */}
