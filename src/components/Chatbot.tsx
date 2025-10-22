@@ -3,7 +3,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { MessageCircle, X, Send, GraduationCap } from 'lucide-react';
-import { useLocalStorage } from '@/hooks/useLocalStorage';
+import { openDB } from 'idb';
 
 interface Message {
   role: 'user' | 'assistant';
@@ -13,13 +13,8 @@ interface Message {
 
 export default function Chatbot() {
   const [isOpen, setIsOpen] = useState(false);
-  const [messages, setMessages] = useLocalStorage<Message[]>('chatbot-messages', [
-    {
-      role: 'assistant',
-      content: "Hello! I'm your AI assistant for The 3rd Academy. How can I help you today?",
-      timestamp: new Date()
-    }
-  ]);
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [loading, setLoading] = useState(true);
   const [input, setInput] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -32,6 +27,56 @@ export default function Chatbot() {
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
+
+  // IndexedDB setup and message loading
+  useEffect(() => {
+    const initDB = async () => {
+      const db = await openDB('ChatbotDB', 1, {
+        upgrade(db) {
+          if (!db.objectStoreNames.contains('messages')) {
+            db.createObjectStore('messages', { keyPath: 'id' });
+          }
+        },
+      });
+
+      const tx = db.transaction('messages', 'readonly');
+      const store = tx.objectStore('messages');
+      const storedMessages = await store.getAll();
+
+      if (storedMessages.length === 0) {
+        // Initial message if no stored messages
+        const initialMessages: Message[] = [
+          {
+            role: 'assistant',
+            content: "Hello! I'm your AI assistant for The 3rd Academy. How can I help you today?",
+            timestamp: new Date()
+          }
+        ];
+        setMessages(initialMessages);
+        await saveMessages(initialMessages);
+      } else {
+        setMessages(storedMessages[0]?.messages || []);
+      }
+
+      setLoading(false);
+    };
+
+    initDB();
+  }, []);
+
+  const saveMessages = async (msgs: Message[]) => {
+    const db = await openDB('ChatbotDB', 1);
+    const tx = db.transaction('messages', 'readwrite');
+    const store = tx.objectStore('messages');
+    await store.put({ id: 'chat', messages: msgs });
+  };
+
+  // Save messages whenever they change
+  useEffect(() => {
+    if (!loading && messages.length > 0) {
+      saveMessages(messages);
+    }
+  }, [messages, loading]);
 
   const sendMessage = async (messageContent: string) => {
     if (!messageContent.trim()) return;
