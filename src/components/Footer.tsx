@@ -64,6 +64,7 @@ export default function Footer() {
                 { name: 'About Us', href: '/about' },
                 { name: 'Careers', href: '/careers' },
                 { name: 'Contact', href: '/contact' },
+                { name: 'Skill Passport', href: '/skill-passport' },
                 { name: 'FAQ', href: '/#faq' }
               ].map((item, i) => (
                 <motion.li key={i} whileHover={{ x: 5, color: '#fff' }}>

@@ -62,7 +62,11 @@
     "react-markdown": "^10.1.0",
     "remark-gfm": "^4.0.1",
     "@tanstack/react-table": "^8.20.5",
-    "idb": "latest"
+    "idb": "latest",
+    "openai": "latest",
+    "pdf-parse": "latest",
+    "mammoth": "latest",
+    "formidable": "latest"
   },
   "devDependencies": {
     "@types/react": "^18.2.43",
@@ -74,6 +78,7 @@
     "postcss": "^8.4.32",
     "eslint": "^8.55.0",
     "eslint-config-next": "14.0.4",
-    "tailwindcss-animate": "^1.0.7"
+    "tailwindcss-animate": "^1.0.7",
+    "@types/multer": "latest"
   }
 }
