@@ -64,10 +64,13 @@
     "@tanstack/react-table": "^8.20.5",
     "idb": "latest",
     "openai": "latest",
-    "pdf-parse": "latest",
-    "mammoth": "latest",
     "formidable": "latest",
-    "pdfjs-dist": "latest"
+    "mammoth": "latest",
+    "react-pdf": "latest",
+    "next-auth": "^0.0.0-peer-deps",
+    "pdfjs-dist": "^3.11.174",
+    "html2canvas": "latest",
+    "jspdf": "latest"
   },
   "devDependencies": {
     "@types/react": "^18.2.43",
@@ -80,7 +83,6 @@
     "eslint": "^8.55.0",
     "eslint-config-next": "14.0.4",
     "tailwindcss-animate": "^1.0.7",
-    "@types/multer": "latest",
-    "@types/formidable": "latest"
+    "@types/multer": "latest"
   }
 }
