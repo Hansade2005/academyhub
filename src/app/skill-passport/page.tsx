@@ -23,16 +23,6 @@ const Logger = {
   },
 };
 
-// Configure worker
-pdfjsLib.GlobalWorkerOptions.workerSrc =
-  "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
-
-const Logger = {
-  log(type: string, message: string) {
-    console.log(`[${type}] ${message}`);
-  },
-};
-
 async function extractTextFromPDF(pdf: any): Promise<string> {
   Logger.log("TEXT_EXTRACTION_START", `Extracting ${pdf.numPages} pages`);
 
