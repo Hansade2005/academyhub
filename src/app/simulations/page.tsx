@@ -1069,7 +1069,7 @@ Return ONLY the JSON object with no additional text.`;
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
               >
-                <Card className="hover:shadow-lg transition-shadow cursor-pointer h-full">
+                <Card className="hover:shadow-lg transition-shadow cursor-pointer h-full bg-gradient-to-br from-gray-800/20 to-gray-900/20 backdrop-blur-md border-white/10">
                   <CardHeader>
                     <div className="flex items-start justify-between mb-4">
                       <div className={`w-12 h-12 rounded-lg ${simulation.color} flex items-center justify-center`}>

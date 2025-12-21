@@ -68,10 +68,10 @@ export default function Profile() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Profile Overview */}
           <div className="lg:col-span-1">
-            <Card>
+            <Card className="bg-gradient-to-br from-indigo-600/20 to-purple-600/20 backdrop-blur-xl border border-white/10">
               <CardHeader>
-                <CardTitle>Profile Overview</CardTitle>
-                <CardDescription>Your account information</CardDescription>
+                <CardTitle className="text-gray-300">Profile Overview</CardTitle>
+                <CardDescription className="text-gray-400">Your account information</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="flex flex-col items-center space-y-4">
@@ -99,10 +99,10 @@ export default function Profile() {
 
           {/* Profile Form */}
           <div className="lg:col-span-2">
-            <Card>
+            <Card className="bg-gradient-to-br from-emerald-600/20 to-teal-600/20 backdrop-blur-xl border border-white/10">
               <CardHeader>
-                <CardTitle>Edit Profile</CardTitle>
-                <CardDescription>Update your personal information</CardDescription>
+                <CardTitle className="text-gray-300">Edit Profile</CardTitle>
+                <CardDescription className="text-gray-400">Update your personal information</CardDescription>
               </CardHeader>
               <CardContent>
                 <form onSubmit={handleSubmit} className="space-y-6">

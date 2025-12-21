@@ -72,10 +72,10 @@ export default function PassportsPage() {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {passports.map((passport) => (
-              <Card key={passport.id} className="hover:shadow-lg transition-shadow">
+              <Card key={passport.id} className="bg-gradient-to-br from-indigo-600/20 to-blue-600/20 backdrop-blur-xl border border-white/10 hover:from-indigo-600/30 hover:to-blue-600/30 transition-all duration-300">
                 <CardHeader>
-                  <CardTitle className="text-lg">{passport.title}</CardTitle>
-                  <CardDescription>
+                  <CardTitle className="text-lg text-gray-300">{passport.title}</CardTitle>
+                  <CardDescription className="text-gray-400">
                     Created on {new Date(passport.created_at).toLocaleDateString()}
                   </CardDescription>
                 </CardHeader>

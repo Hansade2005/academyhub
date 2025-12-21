@@ -223,7 +223,7 @@ export default function LiveWorksPage() {
       </div>
 
       <Tabs defaultValue="projects" className="space-y-6">
-        <TabsList>
+        <TabsList className="bg-gradient-to-br from-gray-800/20 to-gray-900/20 backdrop-blur-md border-white/10">
           <TabsTrigger value="projects">Available Projects</TabsTrigger>
           <TabsTrigger value="portfolio">My Portfolio</TabsTrigger>
           <TabsTrigger value="applications">My Applications</TabsTrigger>
@@ -267,7 +267,7 @@ export default function LiveWorksPage() {
               </h2>
               <div className="grid gap-6">
                 {filteredProjects.filter(p => p.featured).map((project) => (
-                  <Card key={project.id} className="border-2 border-yellow-200 bg-gradient-to-r from-yellow-50 to-orange-50">
+                  <Card key={project.id} className="bg-gradient-to-br from-yellow-900/20 to-orange-900/20 backdrop-blur-md border-white/20 hover:from-yellow-900/30 hover:to-orange-900/30 transition-all duration-300">
                     <CardHeader>
                       <div className="flex justify-between items-start">
                         <div className="flex items-center gap-3">
@@ -476,7 +476,7 @@ export default function LiveWorksPage() {
           </div>
 
           {portfolios.length === 0 ? (
-            <Card>
+            <Card className="bg-gradient-to-br from-gray-800/20 to-gray-900/20 backdrop-blur-md border-white/10">
               <CardContent className="flex flex-col items-center justify-center py-12">
                 <Briefcase className="h-12 w-12 text-muted-foreground mb-4" />
                 <h3 className="text-lg font-semibold mb-2">No portfolio projects yet</h3>
@@ -492,7 +492,7 @@ export default function LiveWorksPage() {
           ) : (
             <div className="grid gap-6">
               {portfolios.map((portfolio) => (
-                <Card key={portfolio.id}>
+                <Card key={portfolio.id} className="bg-gradient-to-br from-gray-800/20 to-gray-900/20 backdrop-blur-md border-white/10">
                   <CardHeader>
                     <div className="flex justify-between items-start">
                       <div>
@@ -547,7 +547,7 @@ export default function LiveWorksPage() {
         <TabsContent value="applications" className="space-y-6">
           <h2 className="text-2xl font-semibold">My Applications</h2>
 
-          <Card>
+          <Card className="bg-gradient-to-br from-gray-800/20 to-gray-900/20 backdrop-blur-md border-white/10">
             <CardContent className="flex flex-col items-center justify-center py-12">
               <Briefcase className="h-12 w-12 text-muted-foreground mb-4" />
               <h3 className="text-lg font-semibold mb-2">No applications yet</h3>

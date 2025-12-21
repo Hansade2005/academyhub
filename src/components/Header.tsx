@@ -30,7 +30,7 @@ export default function Header() {
 
   return (
     <motion.header
-      className="bg-black/70 backdrop-blur-md shadow-lg sticky top-0 z-50"
+      className="bg-gradient-to-br from-black/80 to-gray-900/80 backdrop-blur-md shadow-lg sticky top-0 z-50"
       initial={{ y: -100, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.8 }}

@@ -173,10 +173,10 @@ export default function Dashboard() {
   if (!user) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex items-center justify-center">
-        <Card className="bg-white/10 backdrop-blur-md border-white/20">
+        <Card className="bg-gradient-to-br from-red-600/20 to-orange-600/20 backdrop-blur-xl border border-white/10">
           <CardContent className="p-8 text-center">
-            <h2 className="text-2xl font-bold text-white mb-4">Access Required</h2>
-            <p className="text-white/80 mb-6">Please log in to access your dashboard</p>
+            <h2 className="text-2xl font-bold text-gray-300 mb-4">Access Required</h2>
+            <p className="text-gray-400 mb-6">Please log in to access your dashboard</p>
             <Button asChild>
               <Link href="/auth/login">Sign In</Link>
             </Button>
@@ -262,16 +262,16 @@ export default function Dashboard() {
           transition={{ delay: 0.6 }}
           className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-8"
         >
-          <Card className="bg-gradient-to-r from-green-500/10 to-blue-500/10 border-green-500/20 backdrop-blur-md">
+          <Card className="bg-gradient-to-br from-emerald-600/20 to-teal-600/20 backdrop-blur-xl border border-white/10">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-4">
-                  <div className="p-3 bg-green-500/20 rounded-full">
-                    <Sparkles className="h-6 w-6 text-green-400" />
+                  <div className="p-3 bg-emerald-500/20 rounded-full">
+                    <Sparkles className="h-6 w-6 text-emerald-400" />
                   </div>
                   <div>
-                    <h3 className="text-lg font-semibold text-white">Welcome to Your Learning Dashboard! 🎊</h3>
-                    <p className="text-white/80">Get started by creating your first skill passport to showcase your expertise.</p>
+                    <h3 className="text-lg font-semibold text-gray-300">Welcome to Your Learning Dashboard! 🎊</h3>
+                    <p className="text-gray-400">Get started by creating your first skill passport to showcase your expertise.</p>
                   </div>
                 </div>
                 <Button asChild className="bg-green-600 hover:bg-green-700">
@@ -288,7 +288,7 @@ export default function Dashboard() {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-8">
-          <TabsList className="grid w-full grid-cols-4 bg-white/10 backdrop-blur-md border-white/20">
+          <TabsList className="grid w-full grid-cols-4 bg-gradient-to-br from-gray-800/20 to-gray-900/20 backdrop-blur-md border-white/10">
             <TabsTrigger value="overview" className="data-[state=active]:bg-white/20">Overview</TabsTrigger>
             <TabsTrigger value="analytics" className="data-[state=active]:bg-white/20">Analytics</TabsTrigger>
             <TabsTrigger value="achievements" className="data-[state=active]:bg-white/20">Achievements</TabsTrigger>
@@ -376,7 +376,7 @@ export default function Dashboard() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
             >
-              <Card className="bg-white/5 backdrop-blur-md border-white/10">
+              <Card className="bg-gradient-to-br from-gray-800/20 to-gray-900/20 backdrop-blur-md border-white/10">
                 <CardHeader>
                   <CardTitle className="text-white flex items-center gap-2">
                     <Zap className="h-5 w-5" />
@@ -506,12 +506,7 @@ export default function Dashboard() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3 }}
             >
-              <Card className="bg-white/5 backdrop-blur-md border-white/10">
-                <CardHeader>
-                  <CardTitle className="text-white flex items-center gap-2">
-                    <Activity className="h-5 w-5" />
-                    Recent Activity
-                  </CardTitle>
+              <Card className="bg-gradient-to-br from-gray-800/20 to-gray-900/20 backdrop-blur-md border-white/10">
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4">
@@ -548,7 +543,7 @@ export default function Dashboard() {
 
           <TabsContent value="analytics" className="space-y-8">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-              <Card className="bg-white/5 backdrop-blur-md border-white/10">
+              <Card className="bg-gradient-to-br from-gray-800/20 to-gray-900/20 backdrop-blur-md border-white/10">
                 <CardHeader>
                   <CardTitle className="text-white">Learning Progress</CardTitle>
                 </CardHeader>
@@ -579,7 +574,7 @@ export default function Dashboard() {
                 </CardContent>
               </Card>
 
-              <Card className="bg-white/5 backdrop-blur-md border-white/10">
+              <Card className="bg-gradient-to-br from-gray-800/20 to-gray-900/20 backdrop-blur-md border-white/10">
                 <CardHeader>
                   <CardTitle className="text-white">Skill Distribution</CardTitle>
                 </CardHeader>
@@ -640,7 +635,7 @@ export default function Dashboard() {
           </TabsContent>
 
           <TabsContent value="activity" className="space-y-8">
-            <Card className="bg-white/5 backdrop-blur-md border-white/10">
+            <Card className="bg-gradient-to-br from-gray-800/20 to-gray-900/20 backdrop-blur-md border-white/10">
               <CardHeader>
                 <CardTitle className="text-white">Activity Timeline</CardTitle>
                 <CardDescription className="text-white/70">

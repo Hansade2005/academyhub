@@ -206,7 +206,7 @@ export default function PortfolioPage() {
       </div>
 
       <Tabs defaultValue="projects" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-4">
+        <TabsList className="grid w-full grid-cols-4 bg-gradient-to-br from-gray-800/20 to-gray-900/20 backdrop-blur-md border-white/10">
           <TabsTrigger value="projects">Projects</TabsTrigger>
           <TabsTrigger value="skills">Skills</TabsTrigger>
           <TabsTrigger value="achievements">Achievements</TabsTrigger>
@@ -294,7 +294,7 @@ export default function PortfolioPage() {
           <h2 className="text-2xl font-semibold">Skills & Expertise</h2>
 
           {skillShowcase.length === 0 ? (
-            <Card>
+            <Card className="bg-gradient-to-br from-gray-800/20 to-gray-900/20 backdrop-blur-md border-white/10">
               <CardContent className="flex flex-col items-center justify-center py-12">
                 <TrendingUp className="h-12 w-12 text-muted-foreground mb-4" />
                 <h3 className="text-lg font-semibold mb-2">No skills tracked yet</h3>
@@ -309,7 +309,7 @@ export default function PortfolioPage() {
           ) : (
             <div className="grid gap-6">
               {skillShowcase.map((skill, index) => (
-                <Card key={index}>
+                <Card key={index} className="bg-gradient-to-br from-gray-800/20 to-gray-900/20 backdrop-blur-md border-white/10">
                   <CardHeader>
                     <div className="flex justify-between items-center">
                       <CardTitle className="text-lg">{skill.skill}</CardTitle>
@@ -343,7 +343,7 @@ export default function PortfolioPage() {
           <h2 className="text-2xl font-semibold">Achievements & Milestones</h2>
 
           {achievements.length === 0 ? (
-            <Card>
+            <Card className="bg-gradient-to-br from-gray-800/20 to-gray-900/20 backdrop-blur-md border-white/10">
               <CardContent className="flex flex-col items-center justify-center py-12">
                 <Award className="h-12 w-12 text-muted-foreground mb-4" />
                 <h3 className="text-lg font-semibold mb-2">No achievements yet</h3>
@@ -355,7 +355,7 @@ export default function PortfolioPage() {
           ) : (
             <div className="grid gap-4">
               {achievements.map((achievement) => (
-                <Card key={achievement.id} className="border-l-4 border-l-yellow-400">
+                <Card key={achievement.id} className="border-l-4 border-l-yellow-400 bg-gradient-to-br from-gray-800/20 to-gray-900/20 backdrop-blur-md border-white/10">
                   <CardContent className="p-6">
                     <div className="flex items-center gap-4">
                       <div className="p-3 bg-yellow-100 rounded-full">
@@ -386,7 +386,7 @@ export default function PortfolioPage() {
 
           <div className="space-y-4">
             {skillPassports.slice(0, 5).map((passport: any, index: number) => (
-              <Card key={passport.id}>
+              <Card key={passport.id} className="bg-gradient-to-br from-gray-800/20 to-gray-900/20 backdrop-blur-md border-white/10">
                 <CardContent className="p-4">
                   <div className="flex items-center gap-3">
                     <div className="p-2 bg-blue-100 rounded-full">
@@ -404,7 +404,7 @@ export default function PortfolioPage() {
             ))}
 
             {simulations.slice(0, 3).map((simulation: any, index: number) => (
-              <Card key={simulation.id}>
+              <Card key={simulation.id} className="bg-gradient-to-br from-gray-800/20 to-gray-900/20 backdrop-blur-md border-white/10">
                 <CardContent className="p-4">
                   <div className="flex items-center gap-3">
                     <div className="p-2 bg-green-100 rounded-full">
@@ -422,7 +422,7 @@ export default function PortfolioPage() {
             ))}
 
             {progress.slice(0, 3).map((entry: any, index: number) => (
-              <Card key={`${entry.skill}-${index}`}>
+              <Card key={`${entry.skill}-${index}`} className="bg-gradient-to-br from-gray-800/20 to-gray-900/20 backdrop-blur-md border-white/10">
                 <CardContent className="p-4">
                   <div className="flex items-center gap-3">
                     <div className="p-2 bg-purple-100 rounded-full">
@@ -441,7 +441,7 @@ export default function PortfolioPage() {
           </div>
 
           {skillPassports.length === 0 && simulations.length === 0 && progress.length === 0 && (
-            <Card>
+            <Card className="bg-gradient-to-br from-gray-800/20 to-gray-900/20 backdrop-blur-md border-white/10">
               <CardContent className="flex flex-col items-center justify-center py-12">
                 <Calendar className="h-12 w-12 text-muted-foreground mb-4" />
                 <h3 className="text-lg font-semibold mb-2">No activity yet</h3>

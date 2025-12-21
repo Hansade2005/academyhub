@@ -160,7 +160,7 @@ export default function AnalyticsPage() {
         {/* Charts and Details */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Recent Progress */}
-          <Card>
+          <Card className="bg-gradient-to-br from-gray-800/20 to-gray-900/20 backdrop-blur-md border-white/10">
             <CardHeader>
               <CardTitle>Recent Progress</CardTitle>
               <CardDescription>Your latest skill development entries</CardDescription>
@@ -190,7 +190,7 @@ export default function AnalyticsPage() {
           </Card>
 
           {/* Simulation Performance */}
-          <Card>
+          <Card className="bg-gradient-to-br from-gray-800/20 to-gray-900/20 backdrop-blur-md border-white/10">
             <CardHeader>
               <CardTitle>Simulation Performance</CardTitle>
               <CardDescription>Your assessment results over time</CardDescription>
@@ -222,7 +222,7 @@ export default function AnalyticsPage() {
         </div>
 
         {/* Skill Development Chart Placeholder */}
-        <Card className="mt-8">
+        <Card className="mt-8 bg-gradient-to-br from-gray-800/20 to-gray-900/20 backdrop-blur-md border-white/10">
           <CardHeader>
             <CardTitle>Skill Development Over Time</CardTitle>
             <CardDescription>Visual representation of your progress trends</CardDescription>

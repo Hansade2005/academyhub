@@ -38,7 +38,7 @@ export default function Footer() {
               ].map((social, i) => (
                 <motion.button
                   key={i}
-                  className={`p-3 bg-white/5 backdrop-blur-xl border border-white/10 rounded-full ${social.color} transition-all duration-300`}
+                  className={`p-3 bg-gray-800/20 backdrop-blur-xl border border-white/10 rounded-full ${social.color} transition-all duration-300`}
                   whileHover={{ scale: 1.2, y: -5 }}
                   whileTap={{ scale: 0.9 }}
                 >

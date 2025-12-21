@@ -254,7 +254,7 @@ export default function SkillPassportPage() {
               </h2>
 
               <form onSubmit={handleSubmit} className="space-y-6">
-                <div className="p-6 bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl">
+                <div className="p-6 bg-gradient-to-br from-gray-800/20 to-gray-900/20 backdrop-blur-xl border border-white/10 rounded-2xl">
                   <label htmlFor="file-upload" className="block mb-4 text-xl font-medium text-gray-300">
                     Upload your CV/Resume
                   </label>
@@ -268,7 +268,7 @@ export default function SkillPassportPage() {
                 </div>
 
                 {preview && (
-                  <div className="p-6 bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl">
+                  <div className="p-6 bg-gradient-to-br from-gray-800/20 to-gray-900/20 backdrop-blur-xl border border-white/10 rounded-2xl">
                     <h3 className="text-xl font-semibold mb-4 text-gray-300">Preview (Page 1)</h3>
                     <img
                       src={preview}
@@ -303,7 +303,7 @@ export default function SkillPassportPage() {
                   )}
                 </button>
 
-                <div className="p-4 bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl">
+                <div className="p-4 bg-gradient-to-br from-gray-800/20 to-gray-900/20 backdrop-blur-xl border border-white/10 rounded-2xl">
                   <ThemeSelector selectedTheme={selectedTheme} onThemeChange={setSelectedTheme} />
                 </div>
 
@@ -321,7 +321,7 @@ export default function SkillPassportPage() {
                 Your Skill Passport
               </h2>
 
-              <div className="p-4 bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl min-h-[600px]">
+              <div className="p-4 bg-gradient-to-br from-gray-800/20 to-gray-900/20 backdrop-blur-xl border border-white/10 rounded-2xl min-h-[600px]">
                 {result ? (
                   <SkillPassportDisplay data={result.data} themeName={selectedTheme} />
                 ) : (
