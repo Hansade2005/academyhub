@@ -1,0 +1,58 @@
+{
+  "name": "Crown M.",
+  "roleSeeking": "Community Support & Youth Services Coordinator",
+  "locationPreference": "Calgary or Hybrid Roles across Alberta",
+  "hardSkillsScore": 84.3,
+  "softSkillsScore": 84.1,
+  "languages": [
+    {
+      "language": "English",
+      "proficiency": "Fluent"
+    },
+    {
+      "language": "French",
+      "proficiency": "Basic"
+    },
+    {
+      "language": "Hausa",
+      "proficiency": "Basic"
+    }
+  ],
+  "availability": "Within 2 weeks",
+  "readinessTier": "Work Ready",
+  "passportId": "3A-SP-2025-00014",
+  "passportStatus": "Verified & Active",
+  "lastUpdated": "Sept 2025",
+  "careerHighlights": [
+    "Supported over 100 newcomer youth through case management, employment assistance, and integration programs.",
+    "Developed and facilitated workshops on cultural adaptation, job search strategies, and skill development.",
+    "Collaborated with community partners to create pathways for youth employment and education opportunities."
+  ],
+  "education": [
+    {
+      "degree": "Bachelor of Social Work",
+      "institution": "University of Calgary",
+      "year": "2018"
+    }
+  ],
+  "experience": [
+    {
+      "position": "Youth Support Coordinator",
+      "company": "Calgary Newcomers Association",
+      "duration": "2020 - Present",
+      "description": "Provided comprehensive support to newcomer youth, including career counseling and community integration."
+    }
+  ],
+  "skills": {
+    "hardSkills": [
+      "Case Management",
+      "Program Development",
+      "Data Analysis"
+    ],
+    "softSkills": [
+      "Communication",
+      "Empathy",
+      "Problem Solving"
+    ]
+  }
+}
