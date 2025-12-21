@@ -388,6 +388,26 @@ export const getUserAnalyticsProfile = async (userId: string) => {
   return response;
 };
 
+export const updateUserAnalyticsProfile = async (userId: string, analyticsData: any) => {
+  // First get the existing profile to get the record ID
+  const existing = await getUserAnalyticsProfile(userId);
+  if (existing.data && existing.data.length > 0) {
+    const recordId = existing.data[0].id;
+    return await updateTableRecord(TABLE_IDS.user_analytics_profiles, recordId, {
+      demographics: JSON.stringify(analyticsData.demographics),
+      professional_background: JSON.stringify(analyticsData.professionalBackground),
+      career_goals: JSON.stringify(analyticsData.careerGoals),
+      learning_preferences: JSON.stringify(analyticsData.learningPreferences),
+      discovery_source: analyticsData.discoverySource,
+      marketing_consent: analyticsData.marketingConsent,
+      updated_at: new Date().toISOString()
+    });
+  } else {
+    // If no existing profile, create one
+    return await createUserAnalyticsProfile(userId, analyticsData);
+  }
+};
+
 export interface Achievement {
   id: string;
   title: string;
