@@ -164,18 +164,23 @@ Return ONLY the JSON object with no additional text or explanation.`;
     });
 
     if (!response.ok) {
+      console.error(`LLM API call failed: ${response.status} ${response.statusText}`);
       throw new Error(`LLM API call failed: ${response.status} ${response.statusText}`);
     }
 
     const result = await response.json();
+    console.log('Raw LLM response:', result); // Debug: log the raw response
     const completion = result.completion || result.message || '';
+
+    console.log('LLM completion content:', completion.substring(0, 300) + '...'); // Debug: log first 300 chars
 
     // Try to parse the JSON response
     let skillPassportData;
     try {
       skillPassportData = JSON.parse(completion);
+      console.log('Successfully parsed LLM response:', skillPassportData); // Debug: log parsed data
     } catch (parseError) {
-      console.error('Failed to parse LLM response as JSON:', completion);
+      console.error('Failed to parse LLM response as JSON. Raw response:', completion);
       // Fallback to basic extraction if JSON parsing fails
       const { name, hardSkills, softSkills } = extractBasicInfo(text);
       skillPassportData = {
