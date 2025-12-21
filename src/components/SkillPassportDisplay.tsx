@@ -24,6 +24,7 @@ interface SkillPassportData {
   availability: string;
   readinessTier: string;
   passportId: string;
+  passportStatus?: string;
   lastUpdated: string;
   careerHighlights: string[];
   hardSkills: SkillDetail[];
@@ -170,7 +171,7 @@ export default function SkillPassportDisplay({ data, themeName = 'default' }: Sk
           style={{ backgroundColor: theme.colors.surface, borderColor: theme.colors.border }}
         >
           <p style={{ color: theme.colors.text }}>
-            <strong>3 a Skill Passport Status:</strong> {data.passportId} | Verified & Active | Last Updated: {data.lastUpdated}
+            <strong>3 a Skill Passport Status:</strong> {data.passportId} {data.passportStatus ? `| ${data.passportStatus}` : '| Verified & Active'} | Last Updated: {data.lastUpdated}
           </p>
         </div>
       </section>
@@ -209,9 +210,9 @@ export default function SkillPassportDisplay({ data, themeName = 'default' }: Sk
           </table>
         </div>
         <div className="mt-4 text-sm" style={{ color: theme.colors.text }}>
-          <p><strong>Overall Score:</strong> {data.hardSkillsScore}. Readiness Tier: {data.readinessTier} with Supervision</p>
+          <p><strong>Overall Score:</strong> {data.hardSkillsScore.toFixed(1)}. Readiness Tier: {data.readinessTier} with Supervision</p>
           <p><strong>Weighted Confidence:</strong> 100% — All hard skill areas verified through experience or simulation</p>
-          <p className="mt-2">3a Skill Passport is issued by the 3rd Academy. Verified using standardized protocols and evidence logs. 2025 The 3rd Academy. All rights reserved</p>
+          <p className="mt-2">3a Skill Passport is issued by the 3rd Academy. Verified using standardized protocols and evidence logs. © 2025 The 3rd Academy. All rights reserved</p>
         </div>
       </section>
 
@@ -249,8 +250,8 @@ export default function SkillPassportDisplay({ data, themeName = 'default' }: Sk
           </table>
         </div>
         <div className="mt-4 text-sm" style={{ color: theme.colors.text }}>
-          <p><strong>Overall Soft Skills Score:</strong> {data.softSkillsScore}. Readiness Tier: {data.readinessTier}</p>
-          <p><strong>Confidence:</strong> Fully Verified — Inputs: logs, peer feedback, simulations</p>
+          <p><strong>Overall Soft Skills Score:</strong> {data.softSkillsScore.toFixed(1)}. Readiness Tier: {data.readinessTier}</p>
+          <p><strong>Confidence:</strong> Fully Verified — Inputs: logs, peer feedback, simulation</p>
           <p className="mt-2">Download Full Portfolio (PDF including project images, reports, and simulation logs)</p>
           <p>Scoring Reference Tables View Skill Level Rubric & Readiness Tier Guide Includes definitions for scores, tier meanings, and certification treatment</p>
         </div>
