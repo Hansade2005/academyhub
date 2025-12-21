@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 
+const API_BASE = 'https://pipilot.dev/api/v1/databases';
+const DATABASE_ID = process.env.NEXT_PUBLIC_PIPILOT_DATABASE_ID || '41';
+
 const SkillPassportSchema = z.object({
   name: z.string(),
   roleSeeking: z.string(),
@@ -269,6 +272,32 @@ Return ONLY the JSON object with no additional text or explanation.`;
 
 export async function POST(req: NextRequest) {
   try {
+    // Check for authentication
+    const authHeader = req.headers.get('authorization');
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return NextResponse.json({ error: 'Authentication required.' }, { status: 401 });
+    }
+
+    const token = authHeader.substring(7); // Remove 'Bearer ' prefix
+
+    // Verify token with PiPilot
+    const verifyResponse = await fetch(`${API_BASE}/${DATABASE_ID}/auth/verify`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+    });
+
+    if (!verifyResponse.ok) {
+      return NextResponse.json({ error: 'Invalid authentication token.' }, { status: 401 });
+    }
+
+    const verifyData = await verifyResponse.json();
+    if (!verifyData.valid) {
+      return NextResponse.json({ error: 'Authentication token is not valid.' }, { status: 401 });
+    }
+
     const formData = await req.formData();
     const text = formData.get('text') as string;
 

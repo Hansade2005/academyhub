@@ -9,6 +9,19 @@ import ThemeSelector from '@/components/ThemeSelector';
 import { useLocalStorage } from '@/hooks/useLocalStorage';
 import { motion } from 'framer-motion';
 import type { ThemeName } from '@/lib/themes';
+import { useAuth } from '@/lib/auth-context';
+import { createSkillPassport } from '@/lib/database-tools';
+import { pipilotAuthService } from '@/lib/pipilot-auth-service';
+
+// Configure worker
+pdfjsLib.GlobalWorkerOptions.workerSrc =
+  "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+
+const Logger = {
+  log(type: string, message: string) {
+    console.log(`[${type}] ${message}`);
+  },
+};
 
 // Configure worker
 pdfjsLib.GlobalWorkerOptions.workerSrc =
@@ -43,12 +56,24 @@ async function extractTextFromPDF(pdf: any): Promise<string> {
 }
 
 export default function SkillPassportPage() {
+  const { user } = useAuth();
   const [preview, setPreview] = useState<string | null>(null);
   const [output, setOutput] = useState<string>("");
   const [result, setResult] = useState<any | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [selectedTheme, setSelectedTheme] = useLocalStorage<ThemeName>('skill-passport-theme', 'default');
+
+  if (!user) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold mb-4">Access Denied</h1>
+          <p>Please log in to generate skill passports.</p>
+        </div>
+      </div>
+    );
+  }
 
   async function processPDF(file: File) {
     try {
@@ -115,8 +140,13 @@ export default function SkillPassportPage() {
       const formData = new FormData();
       formData.append('text', output);
 
+      const { accessToken } = pipilotAuthService.retrieveTokens();
+
       const response = await fetch('/api/generate-skill-passport', {
         method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${accessToken}`,
+        },
         body: formData,
       });
 
@@ -129,6 +159,17 @@ export default function SkillPassportPage() {
       const data = await response.json();
       console.log('Received data from API:', data); // Debug: log API response
       setResult(data);
+
+      // Save to database
+      if (data && user) {
+        try {
+          await createSkillPassport(user.id, `Skill Passport - ${new Date().toLocaleDateString()}`, data);
+          console.log('Skill passport saved to database');
+        } catch (dbError) {
+          console.error('Failed to save to database:', dbError);
+          // Don't fail the whole process if DB save fails
+        }
+      }
     } catch (err) {
       console.error('Error in handleSubmit:', err);
       setError(err instanceof Error ? err.message : 'An error occurred while generating the skill passport');

@@ -65,6 +65,107 @@ export default function Header() {
               <>
                 {user ? (
                   <div className="flex items-center space-x-4">
+                    <nav className="hidden lg:flex space-x-6 items-center">
+                      <Link href="/dashboard">
+                        <motion.button
+                          className="text-gray-300 hover:text-indigo-400 transition-colors duration-300 font-medium"
+                          whileHover={{ scale: 1.1 }}
+                          whileTap={{ scale: 0.95 }}
+                        >
+                          Dashboard
+                        </motion.button>
+                      </Link>
+                      <Link href="/skill-passport">
+                        <motion.button
+                          className="text-gray-300 hover:text-indigo-400 transition-colors duration-300 font-medium"
+                          whileHover={{ scale: 1.1 }}
+                          whileTap={{ scale: 0.95 }}
+                        >
+                          Skill Passport
+                        </motion.button>
+                      </Link>
+                      <Link href="/analytics">
+                        <motion.button
+                          className="text-gray-300 hover:text-indigo-400 transition-colors duration-300 font-medium"
+                          whileHover={{ scale: 1.1 }}
+                          whileTap={{ scale: 0.95 }}
+                        >
+                          Analytics
+                        </motion.button>
+                      </Link>
+                      <Link href="/simulations">
+                        <motion.button
+                          className="text-gray-300 hover:text-indigo-400 transition-colors duration-300 font-medium"
+                          whileHover={{ scale: 1.1 }}
+                          whileTap={{ scale: 0.95 }}
+                        >
+                          Simulations
+                        </motion.button>
+                      </Link>
+                      <Link href="/mentors">
+                        <motion.button
+                          className="text-gray-300 hover:text-indigo-400 transition-colors duration-300 font-medium"
+                          whileHover={{ scale: 1.1 }}
+                          whileTap={{ scale: 0.95 }}
+                        >
+                          Mentors
+                        </motion.button>
+                      </Link>
+                      <Link href="/talent-exchange">
+                        <motion.button
+                          className="text-gray-300 hover:text-indigo-400 transition-colors duration-300 font-medium"
+                          whileHover={{ scale: 1.1 }}
+                          whileTap={{ scale: 0.95 }}
+                        >
+                          Talent Exchange
+                        </motion.button>
+                      </Link>
+                      <Link href="/employer">
+                        <motion.button
+                          className="text-gray-300 hover:text-indigo-400 transition-colors duration-300 font-medium"
+                          whileHover={{ scale: 1.1 }}
+                          whileTap={{ scale: 0.95 }}
+                        >
+                          Employer
+                        </motion.button>
+                      </Link>
+                      <Link href="/talentvisa">
+                        <motion.button
+                          className="text-gray-300 hover:text-indigo-400 transition-colors duration-300 font-medium"
+                          whileHover={{ scale: 1.1 }}
+                          whileTap={{ scale: 0.95 }}
+                        >
+                          TalentVisa
+                        </motion.button>
+                      </Link>
+                      <Link href="/connections/employers">
+                        <motion.button
+                          className="text-gray-300 hover:text-indigo-400 transition-colors duration-300 font-medium"
+                          whileHover={{ scale: 1.1 }}
+                          whileTap={{ scale: 0.95 }}
+                        >
+                          Connections
+                        </motion.button>
+                      </Link>
+                      <Link href="/liveworks">
+                        <motion.button
+                          className="text-gray-300 hover:text-indigo-400 transition-colors duration-300 font-medium"
+                          whileHover={{ scale: 1.1 }}
+                          whileTap={{ scale: 0.95 }}
+                        >
+                          LiveWorks
+                        </motion.button>
+                      </Link>
+                      <Link href="/portfolio">
+                        <motion.button
+                          className="text-gray-300 hover:text-indigo-400 transition-colors duration-300 font-medium"
+                          whileHover={{ scale: 1.1 }}
+                          whileTap={{ scale: 0.95 }}
+                        >
+                          Portfolio
+                        </motion.button>
+                      </Link>
+                    </nav>
                     <div className="flex items-center space-x-2 text-gray-300">
                       <User size={20} />
                       <span className="font-medium">
@@ -166,6 +267,116 @@ export default function Header() {
                 <>
                   {user ? (
                     <>
+                      <Link href="/dashboard" onClick={() => setIsMenuOpen(false)}>
+                        <motion.button
+                          className="text-gray-300 hover:text-indigo-400 transition-colors duration-300 font-medium py-3 text-2xl text-left"
+                          initial={{ opacity: 0, y: 20 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ delay: 0.1 }}
+                        >
+                          Dashboard
+                        </motion.button>
+                      </Link>
+                      <Link href="/skill-passport" onClick={() => setIsMenuOpen(false)}>
+                        <motion.button
+                          className="text-gray-300 hover:text-indigo-400 transition-colors duration-300 font-medium py-3 text-2xl text-left"
+                          initial={{ opacity: 0, y: 20 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ delay: 0.2 }}
+                        >
+                          Skill Passport
+                        </motion.button>
+                      </Link>
+                      <Link href="/analytics" onClick={() => setIsMenuOpen(false)}>
+                        <motion.button
+                          className="text-gray-300 hover:text-indigo-400 transition-colors duration-300 font-medium py-3 text-2xl text-left"
+                          initial={{ opacity: 0, y: 20 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ delay: 0.3 }}
+                        >
+                          Analytics
+                        </motion.button>
+                      </Link>
+                      <Link href="/simulations" onClick={() => setIsMenuOpen(false)}>
+                        <motion.button
+                          className="text-gray-300 hover:text-indigo-400 transition-colors duration-300 font-medium py-3 text-2xl text-left"
+                          initial={{ opacity: 0, y: 20 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ delay: 0.4 }}
+                        >
+                          Simulations
+                        </motion.button>
+                      </Link>
+                      <Link href="/mentors" onClick={() => setIsMenuOpen(false)}>
+                        <motion.button
+                          className="text-gray-300 hover:text-indigo-400 transition-colors duration-300 font-medium py-3 text-2xl text-left"
+                          initial={{ opacity: 0, y: 20 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ delay: 0.5 }}
+                        >
+                          Mentors
+                        </motion.button>
+                      </Link>
+                      <Link href="/talent-exchange" onClick={() => setIsMenuOpen(false)}>
+                        <motion.button
+                          className="text-gray-300 hover:text-indigo-400 transition-colors duration-300 font-medium py-3 text-2xl text-left"
+                          initial={{ opacity: 0, y: 20 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ delay: 0.6 }}
+                        >
+                          Talent Exchange
+                        </motion.button>
+                      </Link>
+                      <Link href="/employer" onClick={() => setIsMenuOpen(false)}>
+                        <motion.button
+                          className="text-gray-300 hover:text-indigo-400 transition-colors duration-300 font-medium py-3 text-2xl text-left"
+                          initial={{ opacity: 0, y: 20 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ delay: 0.7 }}
+                        >
+                          Employer
+                        </motion.button>
+                      </Link>
+                      <Link href="/talentvisa" onClick={() => setIsMenuOpen(false)}>
+                        <motion.button
+                          className="text-gray-300 hover:text-indigo-400 transition-colors duration-300 font-medium py-3 text-2xl text-left"
+                          initial={{ opacity: 0, y: 20 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ delay: 0.8 }}
+                        >
+                          TalentVisa
+                        </motion.button>
+                      </Link>
+                      <Link href="/connections/employers" onClick={() => setIsMenuOpen(false)}>
+                        <motion.button
+                          className="text-gray-300 hover:text-indigo-400 transition-colors duration-300 font-medium py-3 text-2xl text-left"
+                          initial={{ opacity: 0, y: 20 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ delay: 0.9 }}
+                        >
+                          Connections
+                        </motion.button>
+                      </Link>
+                      <Link href="/liveworks" onClick={() => setIsMenuOpen(false)}>
+                        <motion.button
+                          className="text-gray-300 hover:text-indigo-400 transition-colors duration-300 font-medium py-3 text-2xl text-left"
+                          initial={{ opacity: 0, y: 20 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ delay: 1.0 }}
+                        >
+                          LiveWorks
+                        </motion.button>
+                      </Link>
+                      <Link href="/portfolio" onClick={() => setIsMenuOpen(false)}>
+                        <motion.button
+                          className="text-gray-300 hover:text-indigo-400 transition-colors duration-300 font-medium py-3 text-2xl text-left"
+                          initial={{ opacity: 0, y: 20 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ delay: 1.1 }}
+                        >
+                          Portfolio
+                        </motion.button>
+                      </Link>
                       <div className="flex items-center space-x-3 text-gray-300 py-3">
                         <User size={24} />
                         <span className="font-medium text-xl">
