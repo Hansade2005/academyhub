@@ -4,6 +4,8 @@ import { useAuth } from '@/lib/auth-context';
 import { useEffect, useState } from 'react';
 import { getUserProgress, getUserSimulations, getUserSkillPassports, ProgressEntry, Simulation, calculateConfidenceScore } from '@/lib/database-tools';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import Header from '@/components/Header';
+import Footer from '@/components/Footer';
 
 export default function AnalyticsPage() {
   const { user } = useAuth();
@@ -59,7 +61,28 @@ export default function AnalyticsPage() {
   const recentProgress = progressData.slice(0, 5);
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+    <div className="min-h-screen bg-black text-gray-300 font-sans">
+      {/* Animated Background Elements */}
+      <div className="fixed inset-0 overflow-hidden pointer-events-none">
+        <motion.div
+          className="absolute -top-40 -right-40 w-80 h-80 bg-indigo-900 rounded-full opacity-20 blur-3xl"
+          animate={{
+            scale: [1, 1.2, 1],
+            rotate: [0, 180, 360],
+          }}
+          transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+        />
+        <motion.div
+          className="absolute -bottom-40 -left-40 w-80 h-80 bg-purple-900 rounded-full opacity-20 blur-3xl"
+          animate={{
+            scale: [1.2, 1, 1.2],
+            rotate: [360, 180, 0],
+          }}
+          transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
+        />
+      </div>
+
+      <Header />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Analytics & Insights</h1>
@@ -253,6 +276,7 @@ export default function AnalyticsPage() {
           </CardContent>
         </Card>
       </div>
+      <Footer />
     </div>
   );
 }

@@ -11,6 +11,8 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import Header from '@/components/Header';
+import Footer from '@/components/Footer';
 import { Briefcase, Code, Palette, TrendingUp, Users, DollarSign, Clock, Star, Plus, ExternalLink } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -189,7 +191,28 @@ export default function LiveWorksPage() {
   };
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="min-h-screen bg-black text-gray-300 font-sans">
+      {/* Animated Background Elements */}
+      <div className="fixed inset-0 overflow-hidden pointer-events-none">
+        <motion.div
+          className="absolute -top-40 -right-40 w-80 h-80 bg-indigo-900 rounded-full opacity-20 blur-3xl"
+          animate={{
+            scale: [1, 1.2, 1],
+            rotate: [0, 180, 360],
+          }}
+          transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+        />
+        <motion.div
+          className="absolute -bottom-40 -left-40 w-80 h-80 bg-purple-900 rounded-full opacity-20 blur-3xl"
+          animate={{
+            scale: [1.2, 1, 1.2],
+            rotate: [360, 180, 0],
+          }}
+          transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
+        />
+      </div>
+
+      <Header />
       <div className="mb-8">
         <h1 className="text-3xl font-bold mb-2">LiveWorks Studio</h1>
         <p className="text-muted-foreground">
@@ -533,6 +556,7 @@ export default function LiveWorksPage() {
           </Card>
         </TabsContent>
       </Tabs>
+      <Footer />
     </div>
   );
 }

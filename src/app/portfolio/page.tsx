@@ -9,6 +9,8 @@ import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Progress } from '@/components/ui/progress';
+import Header from '@/components/Header';
+import Footer from '@/components/Footer';
 import { Briefcase, Code, Award, TrendingUp, ExternalLink, Github, Globe, Play, Star, Calendar, Target } from 'lucide-react';
 
 interface PortfolioItem {
@@ -148,7 +150,28 @@ export default function PortfolioPage() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="min-h-screen bg-black text-gray-300 font-sans">
+      {/* Animated Background Elements */}
+      <div className="fixed inset-0 overflow-hidden pointer-events-none">
+        <motion.div
+          className="absolute -top-40 -right-40 w-80 h-80 bg-indigo-900 rounded-full opacity-20 blur-3xl"
+          animate={{
+            scale: [1, 1.2, 1],
+            rotate: [0, 180, 360],
+          }}
+          transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+        />
+        <motion.div
+          className="absolute -bottom-40 -left-40 w-80 h-80 bg-purple-900 rounded-full opacity-20 blur-3xl"
+          animate={{
+            scale: [1.2, 1, 1.2],
+            rotate: [360, 180, 0],
+          }}
+          transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
+        />
+      </div>
+
+      <Header />
       {/* Profile Header */}
       <div className="mb-8">
         <div className="flex items-center gap-6 mb-6">
@@ -429,6 +452,7 @@ export default function PortfolioPage() {
           )}
         </TabsContent>
       </Tabs>
+      <Footer />
     </div>
   );
 }
