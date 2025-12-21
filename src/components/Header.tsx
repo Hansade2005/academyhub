@@ -395,44 +395,7 @@ export default function Header() {
             </motion.nav>
           )}
         </AnimatePresence>
-                        transition={{ delay: 0.4 }}
-                      >
-                        <LogOut size={24} />
-                        <span>Logout</span>
-                      </motion.button>
-                    </>
-                  ) : (
-                    <>
-                      <Link href="/auth/login" onClick={() => setIsMenuOpen(false)}>
-                        <motion.button
-                          className="text-gray-300 hover:text-indigo-400 transition-colors duration-300 font-medium py-3 text-2xl text-left"
-                          initial={{ opacity: 0, y: 20 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          transition={{ delay: 0.4 }}
-                        >
-                          Login
-                        </motion.button>
-                      </Link>
-                      <Link href="/auth/signup" onClick={() => setIsMenuOpen(false)}>
-                        <motion.button
-                          className="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-4 rounded-lg font-medium transition-colors duration-300 text-xl"
-                          initial={{ opacity: 0, y: 20 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          transition={{ delay: 0.45 }}
-                        >
-                          Sign Up
-                        </motion.button>
-                      </Link>
-                    </>
-                  )}
-                </>
-              )}
-            </motion.nav>
-          )}
-        </AnimatePresence>
       </div>
-
-
     </motion.header>
   );
 }
