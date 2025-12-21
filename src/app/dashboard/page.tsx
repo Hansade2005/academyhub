@@ -507,6 +507,14 @@ export default function Dashboard() {
               transition={{ delay: 0.3 }}
             >
               <Card className="bg-gradient-to-br from-gray-800/20 to-gray-900/20 backdrop-blur-md border-white/10">
+                <CardHeader>
+                  <CardTitle className="text-white flex items-center gap-2">
+                    <Activity className="h-5 w-5" />
+                    Recent Activity
+                  </CardTitle>
+                  <CardDescription className="text-white/70">
+                    Your latest learning milestones
+                  </CardDescription>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4">
