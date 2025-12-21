@@ -59,7 +59,7 @@ export async function GET(request: NextRequest) {
         );
       }
 
-      const profile = response.data[0];
+      const profile = response.data[0] as any;
 
       // Parse JSON fields
       const analyticsData = {
