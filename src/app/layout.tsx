@@ -7,18 +7,63 @@ import { AuthProvider } from '@/lib/auth-context'
 const poppins = Poppins({ subsets: ['latin'], weight: ['400', '500', '600', '700'] })
 
 export const metadata: Metadata = {
-  title: '3 a Skill Passport Generator',
-  description: 'Create professional skill passports from your CV using AI-powered analysis. Generate stunning, downloadable documents in seconds.',
-  keywords: ['skill passport', 'CV generator', 'AI resume', 'professional documents', 'career tools'],
-  authors: [{ name: 'PiPilot AI' }],
+  title: 'The 3rd Academy - AI-Powered Career Development Platform',
+  description: 'Transform your career with AI-verified skill assessments, real project work, and proof-based credentials. Connect with employers, build your portfolio, and get hired with confidence through our comprehensive career development platform.',
+  keywords: ['career development', 'skill assessment', 'AI verification', 'job marketplace', 'talent exchange', 'professional development', 'career advancement', 'skill validation', 'workforce readiness', 'career coaching', 'LiveWorks', 'TalentVisa', 'skill passport'],
+  authors: [{ name: 'The 3rd Academy' }],
+  creator: 'The 3rd Academy',
+  publisher: 'The 3rd Academy',
+  formatDetection: {
+    email: false,
+    address: false,
+    telephone: false,
+  },
+  metadataBase: new URL('https://the3rdacademy.com'),
+  alternates: {
+    canonical: '/',
+  },
   openGraph: {
-    title: '3 a Skill Passport Generator',
-    description: 'Transform your CV into a professional skill passport with AI.',
+    title: 'The 3rd Academy - AI-Powered Career Development Platform',
+    description: 'Transform your career with AI-verified skill assessments, real project work, and proof-based credentials. Connect with employers and get hired with confidence.',
+    url: 'https://the3rdacademy.com',
+    siteName: 'The 3rd Academy',
+    images: [
+      {
+        url: 'https://api.a0.dev/assets/image?text=Futuristic AI-powered academy logo with glowing blue circuit patterns and neural networks&aspect=1:1&seed=academy_logo',
+        width: 1200,
+        height: 630,
+        alt: 'The 3rd Academy - AI-Powered Career Development Platform',
+      },
+    ],
+    locale: 'en_US',
     type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'The 3rd Academy - AI-Powered Career Development Platform',
+    description: 'Transform your career with AI-verified skill assessments, real project work, and proof-based credentials.',
+    images: ['https://api.a0.dev/assets/image?text=Futuristic AI-powered academy logo with glowing blue circuit patterns and neural networks&aspect=1:1&seed=academy_logo'],
+    creator: '@the3rdacademy',
+  },
+  robots: {
+    index: true,
+    follow: true,
+    nocache: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      noimageindex: false,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
   },
   icons: {
     icon: 'https://api.a0.dev/assets/image?text=Futuristic AI-powered academy logo with glowing blue circuit patterns and neural networks&aspect=1:1&seed=academy_logo',
+    shortcut: 'https://api.a0.dev/assets/image?text=Futuristic AI-powered academy logo with glowing blue circuit patterns and neural networks&aspect=1:1&seed=academy_logo',
+    apple: 'https://api.a0.dev/assets/image?text=Futuristic AI-powered academy logo with glowing blue circuit patterns and neural networks&aspect=1:1&seed=academy_logo',
   },
+  manifest: '/manifest.json',
 }
 
 export default function RootLayout({

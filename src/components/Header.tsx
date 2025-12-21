@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import motion, { AnimatePresence } from 'framer-motion';
 import { Menu, X, User, LogOut, ChevronDown, Briefcase, BookOpen, Users, BarChart3, Target, Code, Palette } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
