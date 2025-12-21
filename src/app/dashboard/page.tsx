@@ -82,7 +82,7 @@ export default function Dashboard() {
     applications: 0,
     confidenceScore: 0,
     recentActivity: [],
-    achievements: MOCK_ACHIEVEMENTS,
+    achievements: [],
     goals: []
   });
   const [activeTab, setActiveTab] = useState('overview');

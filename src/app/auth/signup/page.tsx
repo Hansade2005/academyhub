@@ -81,7 +81,7 @@ export default function SignupPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
 
-  const { signup } = useAuth();
+  const { signup, user } = useAuth();
   const router = useRouter();
 
   // Redirect if already logged in
@@ -101,41 +101,52 @@ export default function SignupPage() {
     setAnalyticsData(prev => ({
       ...prev,
       [section]: {
-        ...prev[section],
+        ...(prev[section] as any),
         [field]: value
       }
     }));
   };
 
-  const handleMultiSelect = (section: keyof AnalyticsData, field: string, value: string, checked: boolean) => {
+  const handleTopLevelChange = (field: keyof Pick<AnalyticsData, 'discoverySource' | 'marketingConsent'>, value: any) => {
     setAnalyticsData(prev => ({
       ...prev,
-      [section]: {
-        ...prev[section],
-        [field]: checked
-          ? [...(prev[section] as any)[field], value]
-          : (prev[section] as any)[field].filter((item: string) => item !== value)
-      }
+      [field]: value
     }));
+  };
+
+  const handleMultiSelect = (section: keyof AnalyticsData, field: string, value: string, checked: boolean) => {
+    setAnalyticsData(prev => {
+      const currentSection = prev[section] || {};
+      const currentField = (currentSection as any)[field] || [];
+      return {
+        ...prev,
+        [section]: {
+          ...currentSection,
+          [field]: checked
+            ? [...currentField, value]
+            : currentField.filter((item: string) => item !== value)
+        }
+      };
+    });
   };
 
   const validateStep = (step: number): boolean => {
     switch (step) {
       case 1:
-        return formData.email && formData.password && formData.confirmPassword && formData.fullName &&
+        return !!(formData.email && formData.password && formData.confirmPassword && formData.fullName &&
                formData.password === formData.confirmPassword &&
                formData.password.length >= 8 &&
                /[A-Z]/.test(formData.password) &&
                /[a-z]/.test(formData.password) &&
-               /[0-9]/.test(formData.password);
+               /[0-9]/.test(formData.password));
       case 2:
-        return analyticsData.demographics.ageRange && analyticsData.demographics.location && analyticsData.demographics.educationLevel;
+        return !!(analyticsData.demographics.ageRange && analyticsData.demographics.location && analyticsData.demographics.educationLevel);
       case 3:
-        return analyticsData.professionalBackground.currentRole && analyticsData.professionalBackground.industry && analyticsData.professionalBackground.experienceLevel;
+        return !!(analyticsData.professionalBackground.currentRole && analyticsData.professionalBackground.industry && analyticsData.professionalBackground.experienceLevel);
       case 4:
-        return analyticsData.careerGoals.primaryGoal && analyticsData.careerGoals.targetRole && analyticsData.careerGoals.timeFrame;
+        return !!(analyticsData.careerGoals.primaryGoal && analyticsData.careerGoals.targetRole && analyticsData.careerGoals.timeFrame);
       case 5:
-        return analyticsData.discoverySource && analyticsData.learningPreferences.preferredFormat.length > 0;
+        return !!(analyticsData.discoverySource && analyticsData.learningPreferences.preferredFormat.length > 0);
       default:
         return false;
     }
@@ -162,7 +173,7 @@ export default function SignupPage() {
 
     try {
       // Create user account
-      const user = await signup(formData.email, formData.password, formData.fullName);
+      await signup(formData.email, formData.password, formData.fullName);
 
       // Store analytics data
       await fetch('/api/analytics/profile', {
@@ -171,7 +182,7 @@ export default function SignupPage() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          userId: user.id,
+          userId: user!.id,
           analyticsData
         })
       });
@@ -183,7 +194,7 @@ export default function SignupPage() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          userId: user.id,
+          userId: user!.id,
           eventType: 'user_registration_complete',
           data: {
             ...analyticsData,
@@ -641,7 +652,7 @@ export default function SignupPage() {
                       name="source"
                       value={source}
                       checked={analyticsData.discoverySource === source}
-                      onChange={(e) => handleAnalyticsChange('discoverySource', source)}
+                      onChange={(e) => handleTopLevelChange('discoverySource', source)}
                       className="h-4 w-4 text-indigo-600 border-gray-300 focus:ring-indigo-500"
                     />
                     <span className="ml-2 text-gray-700">{source}</span>
@@ -656,7 +667,7 @@ export default function SignupPage() {
                 <input
                   type="checkbox"
                   checked={analyticsData.marketingConsent}
-                  onChange={(e) => handleAnalyticsChange('marketingConsent', e.target.checked)}
+                  onChange={(e) => handleTopLevelChange('marketingConsent', e.target.checked)}
                   className="h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500 mt-0.5"
                 />
                 <span className="ml-2 text-sm text-gray-700">
