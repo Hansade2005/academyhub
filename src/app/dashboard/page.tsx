@@ -49,6 +49,8 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import { motion, AnimatePresence } from 'framer-motion';
+
 
 interface DashboardStats {
   passports: number;

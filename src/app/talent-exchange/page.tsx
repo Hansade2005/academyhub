@@ -14,6 +14,8 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { Search, MapPin, Clock, DollarSign, Users, Briefcase, Star, TrendingUp } from 'lucide-react';
 import { toast } from 'sonner';
+import { motion, AnimatePresence } from 'framer-motion';
+
 
 interface JobPosting {
   id: string;

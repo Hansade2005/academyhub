@@ -12,6 +12,7 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { Users, MessageSquare, Eye, Clock, CheckCircle, XCircle } from 'lucide-react';
 import { toast } from 'sonner';
+import { motion, AnimatePresence } from 'framer-motion';
 
 interface EmployerConnection {
   id: string;

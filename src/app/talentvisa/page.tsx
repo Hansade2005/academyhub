@@ -12,6 +12,7 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { CheckCircle, XCircle, Clock, Award, TrendingUp, Users, Briefcase } from 'lucide-react';
 import { toast } from 'sonner';
+import { motion, AnimatePresence } from 'framer-motion';
 
 interface TalentVisaStatus {
   isEligible: boolean;

@@ -12,6 +12,8 @@ import { Textarea } from '@/components/ui/textarea';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { Star } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+
 
 interface Mentor {
   id: string;

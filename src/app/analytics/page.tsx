@@ -1,6 +1,7 @@
 'use client';
 
 import { useAuth } from '@/lib/auth-context';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useEffect, useState } from 'react';
 import { getUserProgress, getUserSimulations, getUserSkillPassports, ProgressEntry, Simulation, calculateConfidenceScore } from '@/lib/database-tools';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';

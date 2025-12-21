@@ -15,6 +15,8 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { Briefcase, Code, Palette, TrendingUp, Users, DollarSign, Clock, Star, Plus, ExternalLink } from 'lucide-react';
 import { toast } from 'sonner';
+import { motion, AnimatePresence } from 'framer-motion';
+
 
 interface Project {
   id: string;
