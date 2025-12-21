@@ -335,14 +335,14 @@ export default function LiveWorksPage() {
             <h2 className="text-2xl font-semibold mb-4">All Projects</h2>
             <div className="grid gap-6">
               {filteredProjects.map((project) => (
-                <Card key={project.id} className="hover:shadow-md transition-shadow">
+                <Card key={project.id} className="bg-gradient-to-br from-indigo-600/20 to-blue-600/20 backdrop-blur-xl border border-white/10 hover:from-indigo-600/30 hover:to-blue-600/30 transition-all duration-300">
                   <CardHeader>
                     <div className="flex justify-between items-start">
                       <div className="flex items-center gap-3">
                         {getCategoryIcon(project.category)}
                         <div>
-                          <CardTitle className="text-xl">{project.title}</CardTitle>
-                          <CardDescription className="flex items-center gap-2">
+                          <CardTitle className="text-xl text-gray-300">{project.title}</CardTitle>
+                          <CardDescription className="flex items-center gap-2 text-gray-400">
                             <span>{project.client}</span>
                             <Badge className={getDifficultyColor(project.difficulty)}>
                               {project.difficulty}

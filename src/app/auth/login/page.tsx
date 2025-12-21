@@ -40,9 +40,29 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-black text-gray-300 font-sans flex items-center justify-center p-4">
+      {/* Animated Background Elements */}
+      <div className="fixed inset-0 overflow-hidden pointer-events-none">
+        <motion.div
+          className="absolute -top-40 -right-40 w-80 h-80 bg-indigo-900 rounded-full opacity-20 blur-3xl"
+          animate={{
+            scale: [1, 1.2, 1],
+            rotate: [0, 180, 360],
+          }}
+          transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+        />
+        <motion.div
+          className="absolute -bottom-40 -left-40 w-80 h-80 bg-purple-900 rounded-full opacity-20 blur-3xl"
+          animate={{
+            scale: [1.2, 1, 1.2],
+            rotate: [360, 180, 0],
+          }}
+          transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
+        />
+      </div>
+
       <motion.div
-        className="w-full max-w-md"
+        className="w-full max-w-md relative z-10"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8 }}
@@ -50,7 +70,7 @@ export default function LoginPage() {
         {/* Back to Home Link */}
         <Link
           href="/"
-          className="inline-flex items-center text-gray-600 hover:text-indigo-600 transition-colors mb-8"
+          className="inline-flex items-center text-gray-400 hover:text-indigo-400 transition-colors mb-8"
         >
           <ArrowLeft size={20} className="mr-2" />
           Back to Home
@@ -67,17 +87,17 @@ export default function LoginPage() {
               alt="The 3rd Academy Logo"
               className="h-16 w-16 mr-4 rounded-full shadow-lg"
             />
-            <h1 className="text-3xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+            <h1 className="text-3xl font-bold bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent">
               The 3rd Academy
             </h1>
           </motion.div>
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">Welcome Back</h2>
-          <p className="text-gray-600">Sign in to your account</p>
+          <h2 className="text-2xl font-bold text-gray-300 mb-2">Welcome Back</h2>
+          <p className="text-gray-400">Sign in to your account</p>
         </div>
 
         {/* Form */}
         <motion.div
-          className="bg-white rounded-2xl shadow-xl p-8"
+          className="bg-gradient-to-br from-gray-800/50 to-gray-900/50 backdrop-blur-xl border border-white/10 rounded-2xl shadow-2xl p-8"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2, duration: 0.8 }}
@@ -85,7 +105,7 @@ export default function LoginPage() {
           <form onSubmit={handleSubmit} className="space-y-6">
             {error && (
               <motion.div
-                className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm"
+                className="bg-red-900/20 border border-red-700 text-red-300 px-4 py-3 rounded-lg text-sm"
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
               >
@@ -95,7 +115,7 @@ export default function LoginPage() {
 
             {/* Email Field */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-gray-300 mb-2">
                 Email Address
               </label>
               <div className="relative">
@@ -104,7 +124,7 @@ export default function LoginPage() {
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
+                  className="w-full pl-10 pr-4 py-3 bg-gray-800/50 border border-gray-600 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-gray-300 placeholder-gray-500 transition-colors"
                   placeholder="Enter your email"
                   required
                 />
@@ -113,7 +133,7 @@ export default function LoginPage() {
 
             {/* Password Field */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-gray-300 mb-2">
                 Password
               </label>
               <div className="relative">
@@ -122,14 +142,14 @@ export default function LoginPage() {
                   type={showPassword ? 'text' : 'password'}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full pl-10 pr-12 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
+                  className="w-full pl-10 pr-12 py-3 bg-gray-800/50 border border-gray-600 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-gray-300 placeholder-gray-500 transition-colors"
                   placeholder="Enter your password"
                   required
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-3 text-gray-400 hover:text-gray-600"
+                  className="absolute right-3 top-3 text-gray-400 hover:text-gray-300"
                 >
                   {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                 </button>
@@ -156,11 +176,11 @@ export default function LoginPage() {
 
             {/* Switch to Signup */}
             <div className="text-center">
-              <p className="text-gray-600">
+              <p className="text-gray-400">
                 Don't have an account?{' '}
                 <Link
                   href="/auth/signup"
-                  className="text-indigo-600 hover:text-indigo-700 font-medium transition-colors"
+                  className="text-indigo-400 hover:text-indigo-300 font-medium transition-colors"
                 >
                   Sign up
                 </Link>

@@ -176,12 +176,14 @@ export default function Header() {
               <>
                 {user ? (
                   <div className="flex items-center space-x-4">
-                    <div className="flex items-center space-x-2 text-gray-300">
-                      <User size={20} />
-                      <span className="font-medium">
-                        {user.full_name || user.email.split('@')[0]}
-                      </span>
-                    </div>
+                    <Link href="/dashboard">
+                      <div className="flex items-center space-x-2 text-gray-300 hover:text-indigo-400 transition-colors duration-300 cursor-pointer">
+                        <User size={20} />
+                        <span className="font-medium">
+                          {user.full_name || user.email.split('@')[0]}
+                        </span>
+                      </div>
+                    </Link>
                     <motion.button
                       onClick={handleLogout}
                       className="flex items-center space-x-2 text-gray-300 hover:text-indigo-400 transition-colors duration-300 font-medium"
@@ -350,12 +352,14 @@ export default function Header() {
 
                   {/* User Info & Logout */}
                   <div className="border-t border-gray-700 pt-4 mt-6">
-                    <div className="flex items-center space-x-3 text-gray-300 py-3 mb-4">
-                      <User size={24} />
-                      <span className="font-medium text-xl">
-                        {user.full_name || user.email.split('@')[0]}
-                      </span>
-                    </div>
+                    <Link href="/dashboard" onClick={() => setIsMenuOpen(false)}>
+                      <div className="flex items-center space-x-3 text-gray-300 py-3 mb-4 hover:text-indigo-400 transition-colors duration-300 cursor-pointer">
+                        <User size={24} />
+                        <span className="font-medium text-xl">
+                          {user.full_name || user.email.split('@')[0]}
+                        </span>
+                      </div>
+                    </Link>
                     <motion.button
                       onClick={() => {
                         handleLogout();

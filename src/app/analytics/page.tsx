@@ -94,65 +94,65 @@ export default function AnalyticsPage() {
 
         {/* Key Metrics */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mb-8">
-          <Card>
+          <Card className="bg-gradient-to-br from-blue-600/20 to-indigo-600/20 backdrop-blur-xl border border-white/10">
             <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-gray-600 dark:text-gray-400">
+              <CardTitle className="text-sm font-medium text-gray-300">
                 Skill Passports
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-blue-600">{passports.length}</div>
-              <p className="text-xs text-gray-500">Generated documents</p>
+              <div className="text-2xl font-bold text-blue-400">{passports.length}</div>
+              <p className="text-xs text-gray-400">Generated documents</p>
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="bg-gradient-to-br from-green-600/20 to-emerald-600/20 backdrop-blur-xl border border-white/10">
             <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-gray-600 dark:text-gray-400">
+              <CardTitle className="text-sm font-medium text-gray-300">
                 Simulations Completed
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-green-600">{totalSimulations}</div>
-              <p className="text-xs text-gray-500">AI assessments taken</p>
+              <div className="text-2xl font-bold text-green-400">{totalSimulations}</div>
+              <p className="text-xs text-gray-400">AI assessments taken</p>
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="bg-gradient-to-br from-purple-600/20 to-pink-600/20 backdrop-blur-xl border border-white/10">
             <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-gray-600 dark:text-gray-400">
+              <CardTitle className="text-sm font-medium text-gray-300">
                 Average Score
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-purple-600">{averageSimulationScore}%</div>
-              <p className="text-xs text-gray-500">Across all simulations</p>
+              <div className="text-2xl font-bold text-purple-400">{averageSimulationScore}%</div>
+              <p className="text-xs text-gray-400">Across all simulations</p>
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="bg-gradient-to-br from-orange-600/20 to-red-600/20 backdrop-blur-xl border border-white/10">
             <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-gray-600 dark:text-gray-400">
+              <CardTitle className="text-sm font-medium text-gray-300">
                 Skills Tracked
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-orange-600">{skillsTracked}</div>
-              <p className="text-xs text-gray-500">Unique skills monitored</p>
+              <div className="text-2xl font-bold text-orange-400">{skillsTracked}</div>
+              <p className="text-xs text-gray-400">Unique skills monitored</p>
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="bg-gradient-to-br from-emerald-600/20 to-teal-600/20 backdrop-blur-xl border border-white/10">
             <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-gray-600 dark:text-gray-400">
+              <CardTitle className="text-sm font-medium text-gray-300">
                 Confidence Score™
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className={`text-2xl font-bold ${confidenceScore >= 80 ? 'text-green-600' : confidenceScore >= 60 ? 'text-yellow-600' : 'text-red-600'}`}>
+              <div className={`text-2xl font-bold ${confidenceScore >= 80 ? 'text-green-400' : confidenceScore >= 60 ? 'text-yellow-400' : 'text-red-400'}`}>
                 {confidenceScore}%
               </div>
-              <p className="text-xs text-gray-500">Overall readiness</p>
+              <p className="text-xs text-gray-400">Overall readiness</p>
             </CardContent>
           </Card>
         </div>

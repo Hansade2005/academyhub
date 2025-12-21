@@ -244,13 +244,13 @@ export default function SignupPage() {
             className="space-y-6"
           >
             <div className="text-center mb-6">
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">Create Your Account</h3>
-              <p className="text-gray-600">Let's start with the basics</p>
+              <h3 className="text-xl font-semibold text-gray-300 mb-2">Create Your Account</h3>
+              <p className="text-gray-400">Let's start with the basics</p>
             </div>
 
             {/* Full Name Field */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-gray-300 mb-2">
                 Full Name
               </label>
               <div className="relative">
@@ -259,7 +259,7 @@ export default function SignupPage() {
                   type="text"
                   value={formData.fullName}
                   onChange={(e) => handleInputChange('fullName', e.target.value)}
-                  className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
+                  className="w-full pl-10 pr-4 py-3 bg-gray-800/50 border border-gray-600 rounded-lg text-gray-300 placeholder-gray-500 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
                   placeholder="Enter your full name"
                 />
               </div>
@@ -267,7 +267,7 @@ export default function SignupPage() {
 
             {/* Email Field */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-gray-300 mb-2">
                 Email Address
               </label>
               <div className="relative">
@@ -276,7 +276,7 @@ export default function SignupPage() {
                   type="email"
                   value={formData.email}
                   onChange={(e) => handleInputChange('email', e.target.value)}
-                  className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
+                  className="w-full pl-10 pr-4 py-3 bg-gray-800/50 border border-gray-600 rounded-lg text-gray-300 placeholder-gray-500 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
                   placeholder="Enter your email"
                   required
                 />
@@ -285,7 +285,7 @@ export default function SignupPage() {
 
             {/* Password Field */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-gray-300 mb-2">
                 Password
               </label>
               <div className="relative">
@@ -294,7 +294,7 @@ export default function SignupPage() {
                   type={showPassword ? 'text' : 'password'}
                   value={formData.password}
                   onChange={(e) => handleInputChange('password', e.target.value)}
-                  className="w-full pl-10 pr-12 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
+                  className="w-full pl-10 pr-12 py-3 bg-gray-800/50 border border-gray-600 rounded-lg text-gray-300 placeholder-gray-500 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
                   placeholder="Create a password"
                   required
                 />
@@ -347,8 +347,8 @@ export default function SignupPage() {
             className="space-y-6"
           >
             <div className="text-center mb-6">
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">Tell Us About Yourself</h3>
-              <p className="text-gray-600">Help us personalize your experience</p>
+              <h3 className="text-xl font-semibold text-gray-300 mb-2">Tell Us About Yourself</h3>
+              <p className="text-gray-400">Help us personalize your experience</p>
             </div>
 
             {/* Age Range */}
@@ -431,8 +431,8 @@ export default function SignupPage() {
             className="space-y-6"
           >
             <div className="text-center mb-6">
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">Professional Background</h3>
-              <p className="text-gray-600">Tell us about your current role and experience</p>
+              <h3 className="text-xl font-semibold text-gray-300 mb-2">Professional Background</h3>
+              <p className="text-gray-400">Tell us about your current role and experience</p>
             </div>
 
             {/* Current Role */}
@@ -516,8 +516,8 @@ export default function SignupPage() {
             className="space-y-6"
           >
             <div className="text-center mb-6">
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">Career Goals & Learning</h3>
-              <p className="text-gray-600">What are you looking to achieve?</p>
+              <h3 className="text-xl font-semibold text-gray-300 mb-2">Career Goals & Learning</h3>
+              <p className="text-gray-400">What are you looking to achieve?</p>
             </div>
 
             {/* Primary Goal */}
@@ -628,8 +628,8 @@ export default function SignupPage() {
             className="space-y-6"
           >
             <div className="text-center mb-6">
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">Almost There!</h3>
-              <p className="text-gray-600">Just a few final questions</p>
+              <h3 className="text-xl font-semibold text-gray-300 mb-2">Almost There!</h3>
+              <p className="text-gray-400">Just a few final questions</p>
             </div>
 
             {/* How did you find us */}
@@ -712,9 +712,29 @@ export default function SignupPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-black text-gray-300 font-sans flex items-center justify-center p-4">
+      {/* Animated Background Elements */}
+      <div className="fixed inset-0 overflow-hidden pointer-events-none">
+        <motion.div
+          className="absolute -top-40 -right-40 w-80 h-80 bg-indigo-900 rounded-full opacity-20 blur-3xl"
+          animate={{
+            scale: [1, 1.2, 1],
+            rotate: [0, 180, 360],
+          }}
+          transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+        />
+        <motion.div
+          className="absolute -bottom-40 -left-40 w-80 h-80 bg-purple-900 rounded-full opacity-20 blur-3xl"
+          animate={{
+            scale: [1.2, 1, 1.2],
+            rotate: [360, 180, 0],
+          }}
+          transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
+        />
+      </div>
+
       <motion.div
-        className="w-full max-w-2xl"
+        className="w-full max-w-2xl relative z-10"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8 }}
@@ -722,7 +742,7 @@ export default function SignupPage() {
         {/* Back to Home Link */}
         <Link
           href="/"
-          className="inline-flex items-center text-gray-600 hover:text-indigo-600 transition-colors mb-8"
+          className="inline-flex items-center text-gray-400 hover:text-indigo-400 transition-colors mb-8"
         >
           <ArrowLeft size={20} className="mr-2" />
           Back to Home
@@ -739,12 +759,12 @@ export default function SignupPage() {
               alt="The 3rd Academy Logo"
               className="h-16 w-16 mr-4 rounded-full shadow-lg"
             />
-            <h1 className="text-3xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+            <h1 className="text-3xl font-bold bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent">
               The 3rd Academy
             </h1>
           </motion.div>
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">Join Our Learning Community</h2>
-          <p className="text-gray-600">Step {currentStep} of {totalSteps}</p>
+          <h2 className="text-2xl font-bold text-gray-300 mb-2">Join Our Learning Community</h2>
+          <p className="text-gray-400">Step {currentStep} of {totalSteps}</p>
         </div>
 
         {/* Progress Indicator */}
@@ -752,7 +772,7 @@ export default function SignupPage() {
 
         {/* Form */}
         <motion.div
-          className="bg-white rounded-2xl shadow-xl p-8"
+          className="bg-gradient-to-br from-indigo-600/20 to-purple-600/20 backdrop-blur-xl border border-white/10 rounded-2xl p-8"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2, duration: 0.8 }}
@@ -760,7 +780,7 @@ export default function SignupPage() {
           <form onSubmit={handleSubmit} className="space-y-6">
             {error && (
               <motion.div
-                className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm"
+                className="bg-red-900/20 border border-red-500/20 text-red-400 px-4 py-3 rounded-lg text-sm"
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
               >
@@ -822,11 +842,11 @@ export default function SignupPage() {
 
         {/* Switch to Login */}
         <div className="text-center mt-6">
-          <p className="text-gray-600">
+          <p className="text-gray-400">
             Already have an account?{' '}
             <Link
               href="/auth/login"
-              className="text-indigo-600 hover:text-indigo-700 font-medium transition-colors"
+              className="text-indigo-400 hover:text-indigo-300 font-medium transition-colors"
             >
               Sign in
             </Link>

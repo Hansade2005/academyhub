@@ -196,7 +196,7 @@ export default function MentorsPage() {
         {/* Mentors Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
           {mentors.map((mentor) => (
-            <Card key={mentor.id} className="hover:shadow-lg transition-shadow">
+            <Card key={mentor.id} className="bg-gradient-to-br from-indigo-600/20 to-purple-600/20 backdrop-blur-xl border border-white/10 hover:from-indigo-600/30 hover:to-purple-600/30 transition-all duration-300">
               <CardHeader>
                 <div className="flex items-start space-x-4">
                   <Avatar className="w-16 h-16">
@@ -206,8 +206,8 @@ export default function MentorsPage() {
                     </AvatarFallback>
                   </Avatar>
                   <div className="flex-1">
-                    <CardTitle className="text-lg">{mentor.name}</CardTitle>
-                    <CardDescription>
+                    <CardTitle className="text-lg text-gray-300">{mentor.name}</CardTitle>
+                    <CardDescription className="text-gray-400">
                       {mentor.title} at {mentor.company}
                     </CardDescription>
                     <div className="flex items-center space-x-2 mt-2">
@@ -345,10 +345,10 @@ export default function MentorsPage() {
 
         {/* Recent Feedback */}
         {feedback.length > 0 && (
-          <Card>
+          <Card className="bg-gradient-to-br from-emerald-600/20 to-teal-600/20 backdrop-blur-xl border border-white/10">
             <CardHeader>
-              <CardTitle>Recent Feedback</CardTitle>
-              <CardDescription>Advice and guidance from your mentors</CardDescription>
+              <CardTitle className="text-gray-300">Recent Feedback</CardTitle>
+              <CardDescription className="text-gray-400">Advice and guidance from your mentors</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">

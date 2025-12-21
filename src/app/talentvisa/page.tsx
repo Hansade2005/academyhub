@@ -135,13 +135,13 @@ export default function TalentVisaPage() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Main Status Card */}
         <div className="lg:col-span-2">
-          <Card>
+          <Card className="bg-gradient-to-br from-indigo-600/20 to-purple-600/20 backdrop-blur-xl border border-white/10">
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
+              <CardTitle className="flex items-center gap-2 text-gray-300">
                 <Award className="h-6 w-6" />
                 TalentVisa Status
               </CardTitle>
-              <CardDescription>
+              <CardDescription className="text-gray-400">
                 A verifiable credential that proves your job market readiness
               </CardDescription>
             </CardHeader>
@@ -222,10 +222,10 @@ export default function TalentVisaPage() {
 
         {/* Requirements Sidebar */}
         <div>
-          <Card>
+          <Card className="bg-gradient-to-br from-emerald-600/20 to-teal-600/20 backdrop-blur-xl border border-white/10">
             <CardHeader>
-              <CardTitle>Requirements</CardTitle>
-              <CardDescription>
+              <CardTitle className="text-gray-300">Requirements</CardTitle>
+              <CardDescription className="text-gray-400">
                 Complete these to earn your TalentVisa
               </CardDescription>
             </CardHeader>

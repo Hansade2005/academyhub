@@ -733,11 +733,11 @@ Return ONLY the JSON object with no additional text.`;
 
   if (!user) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
-        <Card className="max-w-md">
+      <div className="min-h-screen bg-black text-gray-300 font-sans flex items-center justify-center">
+        <Card className="max-w-md bg-gradient-to-br from-gray-600/20 to-slate-600/20 backdrop-blur-xl border border-white/10">
           <CardContent className="p-8 text-center">
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">Access Required</h2>
-            <p className="text-gray-600 dark:text-gray-400 mb-6">Please log in to access AI-powered assessments</p>
+            <h2 className="text-2xl font-bold text-gray-300 mb-4">Access Required</h2>
+            <p className="text-gray-400 mb-6">Please log in to access AI-powered assessments</p>
             <Button asChild>
               <a href="/auth/login">Sign In</a>
             </Button>
@@ -776,20 +776,20 @@ Return ONLY the JSON object with no additional text.`;
           </motion.div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-            <Card>
+            <Card className="bg-gradient-to-br from-blue-600/20 to-indigo-600/20 backdrop-blur-xl border border-white/10">
               <CardHeader>
-                <CardTitle className="flex items-center gap-2">
+                <CardTitle className="flex items-center gap-2 text-gray-300">
                   <Target className="h-5 w-5" />
                   Overall Score
                 </CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="text-center">
-                  <div className="text-6xl font-bold text-blue-600 mb-2">
+                  <div className="text-6xl font-bold text-blue-400 mb-2">
                     {assessmentResults.overallScore}%
                   </div>
                   <Progress value={assessmentResults.overallScore} className="h-3 mb-4" />
-                  <p className="text-sm text-gray-600 dark:text-gray-400">
+                  <p className="text-sm text-gray-400">
                     {assessmentResults.overallScore >= 90 ? 'Outstanding!' :
                      assessmentResults.overallScore >= 80 ? 'Excellent work!' :
                      assessmentResults.overallScore >= 70 ? 'Good performance!' :
@@ -800,9 +800,9 @@ Return ONLY the JSON object with no additional text.`;
               </CardContent>
             </Card>
 
-            <Card>
+            <Card className="bg-gradient-to-br from-purple-600/20 to-pink-600/20 backdrop-blur-xl border border-white/10">
               <CardHeader>
-                <CardTitle className="flex items-center gap-2">
+                <CardTitle className="flex items-center gap-2 text-gray-300">
                   <Clock className="h-5 w-5" />
                   Assessment Stats
                 </CardTitle>
@@ -834,17 +834,17 @@ Return ONLY the JSON object with no additional text.`;
             </TabsList>
 
             <TabsContent value="feedback">
-              <Card>
+              <Card className="bg-gradient-to-br from-blue-600/20 to-indigo-600/20 backdrop-blur-xl border border-white/10">
                 <CardHeader>
-                  <CardTitle>Personalized Recommendations</CardTitle>
-                  <CardDescription>AI-generated suggestions based on your performance</CardDescription>
+                  <CardTitle className="text-gray-300">Personalized Recommendations</CardTitle>
+                  <CardDescription className="text-gray-400">AI-generated suggestions based on your performance</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-3">
                     {assessmentResults.recommendations.map((rec: string, index: number) => (
-                      <div key={index} className="flex items-start gap-3 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
-                        <CheckCircle className="h-5 w-5 text-blue-500 mt-0.5 flex-shrink-0" />
-                        <p className="text-blue-800 dark:text-blue-200">{rec}</p>
+                      <div key={index} className="flex items-start gap-3 p-3 bg-blue-900/20 rounded-lg">
+                        <CheckCircle className="h-5 w-5 text-blue-400 mt-0.5 flex-shrink-0" />
+                        <p className="text-blue-200">{rec}</p>
                       </div>
                     ))}
                   </div>
@@ -853,17 +853,17 @@ Return ONLY the JSON object with no additional text.`;
             </TabsContent>
 
             <TabsContent value="strengths">
-              <Card>
+              <Card className="bg-gradient-to-br from-green-600/20 to-emerald-600/20 backdrop-blur-xl border border-white/10">
                 <CardHeader>
-                  <CardTitle className="text-green-700 dark:text-green-400">Your Strengths</CardTitle>
-                  <CardDescription>Areas where you excel</CardDescription>
+                  <CardTitle className="text-gray-300">Your Strengths</CardTitle>
+                  <CardDescription className="text-gray-400">Areas where you excel</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-3">
                     {assessmentResults.strengths.map((strength: string, index: number) => (
-                      <div key={index} className="flex items-center gap-3 p-3 bg-green-50 dark:bg-green-900/20 rounded-lg">
-                        <Star className="h-5 w-5 text-green-500 flex-shrink-0" />
-                        <p className="text-green-800 dark:text-green-200">{strength}</p>
+                      <div key={index} className="flex items-center gap-3 p-3 bg-green-900/20 rounded-lg">
+                        <Star className="h-5 w-5 text-green-400 flex-shrink-0" />
+                        <p className="text-green-200">{strength}</p>
                       </div>
                     ))}
                   </div>
@@ -872,17 +872,17 @@ Return ONLY the JSON object with no additional text.`;
             </TabsContent>
 
             <TabsContent value="improvements">
-              <Card>
+              <Card className="bg-gradient-to-br from-orange-600/20 to-red-600/20 backdrop-blur-xl border border-white/10">
                 <CardHeader>
-                  <CardTitle className="text-orange-700 dark:text-orange-400">Growth Opportunities</CardTitle>
-                  <CardDescription>Areas for focused development</CardDescription>
+                  <CardTitle className="text-gray-300">Growth Opportunities</CardTitle>
+                  <CardDescription className="text-gray-400">Areas for focused development</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-3">
                     {assessmentResults.improvements.map((improvement: string, index: number) => (
-                      <div key={index} className="flex items-center gap-3 p-3 bg-orange-50 dark:bg-orange-900/20 rounded-lg">
-                        <Lightbulb className="h-5 w-5 text-orange-500 flex-shrink-0" />
-                        <p className="text-orange-800 dark:text-orange-200">{improvement}</p>
+                      <div key={index} className="flex items-center gap-3 p-3 bg-orange-900/20 rounded-lg">
+                        <Lightbulb className="h-5 w-5 text-orange-400 flex-shrink-0" />
+                        <p className="text-orange-200">{improvement}</p>
                       </div>
                     ))}
                   </div>
@@ -891,33 +891,33 @@ Return ONLY the JSON object with no additional text.`;
             </TabsContent>
 
             <TabsContent value="analysis">
-              <Card>
+              <Card className="bg-gradient-to-br from-purple-600/20 to-pink-600/20 backdrop-blur-xl border border-white/10">
                 <CardHeader>
-                  <CardTitle className="text-purple-700 dark:text-purple-400">Category Performance Analysis</CardTitle>
-                  <CardDescription>Detailed breakdown by skill category</CardDescription>
+                  <CardTitle className="text-gray-300">Category Performance Analysis</CardTitle>
+                  <CardDescription className="text-gray-400">Detailed breakdown by skill category</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4">
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                      <div className="p-4 bg-green-50 dark:bg-green-900/20 rounded-lg border border-green-200 dark:border-green-800">
-                        <h4 className="font-semibold text-green-800 dark:text-green-200 mb-2">Best Performing</h4>
-                        <p className="text-green-700 dark:text-green-300">{assessmentResults.categoryAnalysis?.bestPerforming || 'N/A'}</p>
+                      <div className="p-4 bg-green-900/20 rounded-lg border border-green-700">
+                        <h4 className="font-semibold text-green-200 mb-2">Best Performing</h4>
+                        <p className="text-green-300">{assessmentResults.categoryAnalysis?.bestPerforming || 'N/A'}</p>
                       </div>
-                      <div className="p-4 bg-orange-50 dark:bg-orange-900/20 rounded-lg border border-orange-200 dark:border-orange-800">
-                        <h4 className="font-semibold text-orange-800 dark:text-orange-200 mb-2">Needs Work</h4>
-                        <p className="text-orange-700 dark:text-orange-300">{assessmentResults.categoryAnalysis?.needsWork || 'N/A'}</p>
+                      <div className="p-4 bg-orange-900/20 rounded-lg border border-orange-700">
+                        <h4 className="font-semibold text-orange-200 mb-2">Needs Work</h4>
+                        <p className="text-orange-300">{assessmentResults.categoryAnalysis?.needsWork || 'N/A'}</p>
                       </div>
-                      <div className="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
-                        <h4 className="font-semibold text-blue-800 dark:text-blue-200 mb-2">Overall Balance</h4>
-                        <p className="text-blue-700 dark:text-blue-300">{assessmentResults.categoryAnalysis?.balanced || 'N/A'}</p>
+                      <div className="p-4 bg-blue-900/20 rounded-lg border border-blue-700">
+                        <h4 className="font-semibold text-blue-200 mb-2">Overall Balance</h4>
+                        <p className="text-blue-300">{assessmentResults.categoryAnalysis?.balanced || 'N/A'}</p>
                       </div>
                     </div>
                     {assessmentResults.detailedFeedback && assessmentResults.detailedFeedback.length > 0 && (
                       <div className="mt-6">
-                        <h4 className="font-semibold text-gray-900 dark:text-white mb-3">Detailed Insights</h4>
+                        <h4 className="font-semibold text-gray-300 mb-3">Detailed Insights</h4>
                         <div className="space-y-2">
                           {assessmentResults.detailedFeedback.map((feedback: string, index: number) => (
-                            <p key={index} className="text-gray-700 dark:text-gray-300 italic">• {feedback}</p>
+                            <p key={index} className="text-gray-400 italic">• {feedback}</p>
                           ))}
                         </div>
                       </div>
@@ -928,28 +928,28 @@ Return ONLY the JSON object with no additional text.`;
             </TabsContent>
 
             <TabsContent value="nextsteps">
-              <Card>
+              <Card className="bg-gradient-to-br from-indigo-600/20 to-blue-600/20 backdrop-blur-xl border border-white/10">
                 <CardHeader>
-                  <CardTitle className="text-indigo-700 dark:text-indigo-400">Immediate Next Steps</CardTitle>
-                  <CardDescription>Actionable steps to accelerate your growth</CardDescription>
+                  <CardTitle className="text-gray-300">Immediate Next Steps</CardTitle>
+                  <CardDescription className="text-gray-400">Actionable steps to accelerate your growth</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4">
                     {assessmentResults.nextSteps && assessmentResults.nextSteps.map((step: string, index: number) => (
-                      <div key={index} className="flex items-start gap-3 p-3 bg-indigo-50 dark:bg-indigo-900/20 rounded-lg">
-                        <div className="w-6 h-6 rounded-full bg-indigo-500 text-white flex items-center justify-center text-sm font-bold flex-shrink-0 mt-0.5">
+                      <div key={index} className="flex items-start gap-3 p-3 bg-indigo-900/20 rounded-lg">
+                        <div className="w-6 h-6 rounded-full bg-indigo-400 text-black flex items-center justify-center text-sm font-bold flex-shrink-0 mt-0.5">
                           {index + 1}
                         </div>
-                        <p className="text-indigo-800 dark:text-indigo-200">{step}</p>
+                        <p className="text-indigo-200">{step}</p>
                       </div>
                     ))}
                     {assessmentResults.motivationalMessage && (
-                      <div className="mt-6 p-4 bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
+                      <div className="mt-6 p-4 bg-gradient-to-r from-blue-900/20 to-purple-900/20 rounded-lg border border-blue-700">
                         <div className="flex items-center gap-2 mb-2">
-                          <Star className="h-5 w-5 text-yellow-500" />
-                          <h4 className="font-semibold text-gray-900 dark:text-white">Motivational Message</h4>
+                          <Star className="h-5 w-5 text-yellow-400" />
+                          <h4 className="font-semibold text-gray-300">Motivational Message</h4>
                         </div>
-                        <p className="text-gray-700 dark:text-gray-300 italic">{assessmentResults.motivationalMessage}</p>
+                        <p className="text-gray-400 italic">{assessmentResults.motivationalMessage}</p>
                       </div>
                     )}
                   </div>
@@ -997,7 +997,7 @@ Return ONLY the JSON object with no additional text.`;
           </div>
 
           {/* Question Card */}
-          <Card className="mb-8">
+          <Card className="mb-8 bg-gradient-to-br from-indigo-600/20 to-purple-600/20 backdrop-blur-xl border border-white/10">
             <CardContent className="p-8">
               {renderQuestion(currentQuestion)}
             </CardContent>
@@ -1150,10 +1150,10 @@ Return ONLY the JSON object with no additional text.`;
 
         {/* Assessment History */}
         {simulations.length > 0 && (
-          <Card>
+          <Card className="bg-gradient-to-br from-slate-600/20 to-gray-600/20 backdrop-blur-xl border border-white/10">
             <CardHeader>
-              <CardTitle>Assessment History</CardTitle>
-              <CardDescription>Your recent assessment performance</CardDescription>
+              <CardTitle className="text-gray-300">Assessment History</CardTitle>
+              <CardDescription className="text-gray-400">Your recent assessment performance</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
@@ -1162,7 +1162,7 @@ Return ONLY the JSON object with no additional text.`;
                   const IconComponent = simType?.icon || Brain;
 
                   return (
-                    <div key={sim.id} className="flex items-center justify-between p-4 border rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+                    <div key={sim.id} className="flex items-center justify-between p-4 border border-gray-700 rounded-lg hover:bg-gray-800/50 transition-colors">
                       <div className="flex items-center space-x-4">
                         <div className={`w-10 h-10 rounded-lg ${simType?.color || 'bg-gray-500'} flex items-center justify-center`}>
                           <IconComponent className="h-5 w-5 text-white" />

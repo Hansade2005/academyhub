@@ -197,37 +197,37 @@ export default function EmployerDashboard() {
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-        <Card>
+        <Card className="bg-gradient-to-br from-blue-600/20 to-indigo-600/20 backdrop-blur-xl border border-white/10">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Active Jobs</CardTitle>
-            <Briefcase className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-sm font-medium text-gray-300">Active Jobs</CardTitle>
+            <Briefcase className="h-4 w-4 text-gray-400" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{jobs.filter(job => job.status === 'active').length}</div>
+            <div className="text-2xl font-bold text-blue-400">{jobs.filter(job => job.status === 'active').length}</div>
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="bg-gradient-to-br from-green-600/20 to-emerald-600/20 backdrop-blur-xl border border-white/10">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Applications</CardTitle>
-            <Users className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-sm font-medium text-gray-300">Total Applications</CardTitle>
+            <Users className="h-4 w-4 text-gray-400" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{applications.length}</div>
+            <div className="text-2xl font-bold text-green-400">{applications.length}</div>
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="bg-gradient-to-br from-purple-600/20 to-pink-600/20 backdrop-blur-xl border border-white/10">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Views</CardTitle>
-            <Eye className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-sm font-medium text-gray-300">Views</CardTitle>
+            <Eye className="h-4 w-4 text-gray-400" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">-</div>
+            <div className="text-2xl font-bold text-purple-400">-</div>
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="bg-gradient-to-br from-orange-600/20 to-red-600/20 backdrop-blur-xl border border-white/10">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Conversion Rate</CardTitle>
             <TrendingUp className="h-4 w-4 text-muted-foreground" />

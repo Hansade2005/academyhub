@@ -286,23 +286,23 @@ export default function TalentExchangePage() {
       {/* Job Listings */}
       <div className="grid gap-6">
         {filteredJobs.length === 0 ? (
-          <Card>
+          <Card className="bg-gradient-to-br from-gray-600/20 to-slate-600/20 backdrop-blur-xl border border-white/10">
             <CardContent className="flex flex-col items-center justify-center py-12">
-              <Briefcase className="h-12 w-12 text-muted-foreground mb-4" />
-              <h3 className="text-lg font-semibold mb-2">No jobs found</h3>
-              <p className="text-muted-foreground text-center">
+              <Briefcase className="h-12 w-12 text-gray-400 mb-4" />
+              <h3 className="text-lg font-semibold text-gray-300 mb-2">No jobs found</h3>
+              <p className="text-gray-400 text-center">
                 {searchTerm ? 'Try adjusting your search terms' : 'Check back later for new opportunities'}
               </p>
             </CardContent>
           </Card>
         ) : (
           filteredJobs.map((job) => (
-            <Card key={job.id} className="hover:shadow-md transition-shadow">
+            <Card key={job.id} className="bg-gradient-to-br from-indigo-600/20 to-blue-600/20 backdrop-blur-xl border border-white/10 hover:from-indigo-600/30 hover:to-blue-600/30 transition-all duration-300">
               <CardHeader>
                 <div className="flex justify-between items-start">
                   <div>
-                    <CardTitle className="text-xl mb-2">{job.title}</CardTitle>
-                    <CardDescription className="flex items-center gap-4 text-sm">
+                    <CardTitle className="text-xl mb-2 text-gray-300">{job.title}</CardTitle>
+                    <CardDescription className="flex items-center gap-4 text-sm text-gray-400">
                       {job.location && (
                         <span className="flex items-center gap-1">
                           <MapPin className="h-4 w-4" />

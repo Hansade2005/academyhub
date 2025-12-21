@@ -144,7 +144,7 @@ export default function EmployerConnectionsPage() {
         <TabsContent value="connections" className="space-y-6">
           <div className="grid gap-4">
             {connections.map((employer) => (
-              <Card key={employer.id} className="hover:shadow-md transition-shadow">
+              <Card key={employer.id} className="bg-gradient-to-br from-indigo-600/20 to-blue-600/20 backdrop-blur-xl border border-white/10 hover:from-indigo-600/30 hover:to-blue-600/30 transition-all duration-300">
                 <CardContent className="p-6">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-4">
@@ -155,9 +155,9 @@ export default function EmployerConnectionsPage() {
                         </AvatarFallback>
                       </Avatar>
                       <div>
-                        <h3 className="font-semibold text-lg">{employer.name}</h3>
-                        <p className="text-muted-foreground">{employer.company}</p>
-                        <p className="text-sm text-muted-foreground">
+                        <h3 className="font-semibold text-lg text-gray-300">{employer.name}</h3>
+                        <p className="text-gray-400">{employer.company}</p>
+                        <p className="text-sm text-gray-400">
                           Last interaction: {new Date(employer.lastInteraction).toLocaleDateString()}
                         </p>
                       </div>
@@ -192,11 +192,11 @@ export default function EmployerConnectionsPage() {
           </div>
 
           {connections.length === 0 && (
-            <Card>
+            <Card className="bg-gradient-to-br from-gray-600/20 to-slate-600/20 backdrop-blur-xl border border-white/10">
               <CardContent className="flex flex-col items-center justify-center py-12">
-                <Users className="h-12 w-12 text-muted-foreground mb-4" />
-                <h3 className="text-lg font-semibold mb-2">No employer connections yet</h3>
-                <p className="text-muted-foreground text-center mb-4">
+                <Users className="h-12 w-12 text-gray-400 mb-4" />
+                <h3 className="text-lg font-semibold text-gray-300 mb-2">No employer connections yet</h3>
+                <p className="text-gray-400 text-center mb-4">
                   Start applying to jobs to build connections with employers
                 </p>
                 <Button asChild>
@@ -210,11 +210,11 @@ export default function EmployerConnectionsPage() {
         <TabsContent value="applications" className="space-y-6">
           <div className="grid gap-4">
             {applications.length === 0 ? (
-              <Card>
+              <Card className="bg-gradient-to-br from-gray-600/20 to-slate-600/20 backdrop-blur-xl border border-white/10">
                 <CardContent className="flex flex-col items-center justify-center py-12">
-                  <Users className="h-12 w-12 text-muted-foreground mb-4" />
-                  <h3 className="text-lg font-semibold mb-2">No applications yet</h3>
-                  <p className="text-muted-foreground text-center mb-4">
+                  <Users className="h-12 w-12 text-gray-400 mb-4" />
+                  <h3 className="text-lg font-semibold text-gray-300 mb-2">No applications yet</h3>
+                  <p className="text-gray-400 text-center mb-4">
                     Your job applications will appear here
                   </p>
                   <Button asChild>
@@ -224,12 +224,12 @@ export default function EmployerConnectionsPage() {
               </Card>
             ) : (
               applications.map((application) => (
-                <Card key={application.id}>
+                <Card key={application.id} className="bg-gradient-to-br from-emerald-600/20 to-teal-600/20 backdrop-blur-xl border border-white/10">
                   <CardContent className="p-6">
                     <div className="flex items-center justify-between">
                       <div>
-                        <h3 className="font-semibold">Application #{application.id.slice(0, 8)}</h3>
-                        <p className="text-sm text-muted-foreground">
+                        <h3 className="font-semibold text-gray-300">Application #{application.id.slice(0, 8)}</h3>
+                        <p className="text-sm text-gray-400">
                           Applied: {new Date(application.applied_at).toLocaleDateString()}
                         </p>
                       </div>

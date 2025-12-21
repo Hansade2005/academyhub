@@ -222,11 +222,11 @@ export default function PortfolioPage() {
           </div>
 
           {portfolios.length === 0 ? (
-            <Card>
+            <Card className="bg-gradient-to-br from-gray-600/20 to-slate-600/20 backdrop-blur-xl border border-white/10">
               <CardContent className="flex flex-col items-center justify-center py-12">
-                <Briefcase className="h-12 w-12 text-muted-foreground mb-4" />
-                <h3 className="text-lg font-semibold mb-2">No projects yet</h3>
-                <p className="text-muted-foreground text-center mb-4">
+                <Briefcase className="h-12 w-12 text-gray-400 mb-4" />
+                <h3 className="text-lg font-semibold text-gray-300 mb-2">No projects yet</h3>
+                <p className="text-gray-400 text-center mb-4">
                   Start building your portfolio by completing LiveWorks projects
                 </p>
                 <Button asChild>
@@ -237,12 +237,12 @@ export default function PortfolioPage() {
           ) : (
             <div className="grid gap-6">
               {portfolios.map((project) => (
-                <Card key={project.id} className="hover:shadow-lg transition-shadow">
+                <Card key={project.id} className="bg-gradient-to-br from-indigo-600/20 to-purple-600/20 backdrop-blur-xl border border-white/10 hover:from-indigo-600/30 hover:to-purple-600/30 transition-all duration-300">
                   <CardHeader>
                     <div className="flex justify-between items-start">
                       <div>
-                        <CardTitle className="text-xl">{project.title}</CardTitle>
-                        <CardDescription className="flex items-center gap-2">
+                        <CardTitle className="text-xl text-gray-300">{project.title}</CardTitle>
+                        <CardDescription className="flex items-center gap-2 text-gray-400">
                           <Calendar className="h-4 w-4" />
                           {new Date(project.created_at).toLocaleDateString()}
                         </CardDescription>
