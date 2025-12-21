@@ -183,6 +183,9 @@ export default function SkillPassportDisplay({ data, themeName = 'default' }: Sk
           </svg>
           TOP SKILLS – VERIFIED, RANKED & WEIGHTED
         </h2>
+        <h3 className={`${theme.fonts.heading} mb-4 text-lg`} style={{ color: theme.colors.text }}>
+          Hard Skills – Task & Technical Ability
+        </h3>
         <div className="overflow-x-auto">
           <table className="min-w-full divide-y divide-gray-200" style={{ borderColor: theme.colors.border }}>
             <thead style={{ backgroundColor: theme.colors.surface }}>
@@ -223,6 +226,10 @@ export default function SkillPassportDisplay({ data, themeName = 'default' }: Sk
           </svg>
           SOFT SKILLS – WORKPLACE STRENGTHS
         </h2>
+        <h3 className={`${theme.fonts.heading} mb-4 text-lg`} style={{ color: theme.colors.text }}>
+          Verified by the 3rd Academy.
+          [Simulation Training & Assessment is standard across all soft skills.]
+        </h3>
         <div className="overflow-x-auto">
           <table className="min-w-full divide-y divide-gray-200" style={{ borderColor: theme.colors.border }}>
             <thead style={{ backgroundColor: theme.colors.surface }}>
@@ -231,7 +238,7 @@ export default function SkillPassportDisplay({ data, themeName = 'default' }: Sk
                 <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Score</th>
                 <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Level</th>
                 <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Weight (%)</th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Method of Verification</th>
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Method of Verification1</th>
                 <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Application</th>
               </tr>
             </thead>
