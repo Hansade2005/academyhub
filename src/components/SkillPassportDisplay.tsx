@@ -143,18 +143,18 @@ export default function SkillPassportDisplay({ data, themeName = 'default' }: Sk
             <p style={{ color: theme.colors.text }}><strong>Location Preference:</strong> {data.locationPreference}</p>
           </div>
           <div>
-            <p style={{ color: theme.colors.text }}><strong>Hard Skills Score:</strong> {data.hardSkillsScore}%</p>
-            <div className="progress-bar mb-2" style={{ borderColor: theme.colors.border }}>
+            <p style={{ color: theme.colors.text }}><strong>Hard Skills Score:</strong> {data.hardSkillsScore.toFixed(1)}%</p>
+            <div className="progress-bar mt-1 mb-4" style={{ height: '12px', borderColor: theme.colors.border, backgroundColor: theme.colors.surface }}>
               <div
                 className="progress-fill"
-                style={{ width: `${data.hardSkillsScore}%`, backgroundColor: theme.colors.primary }}
+                style={{ width: `${data.hardSkillsScore}%`, height: '100%', backgroundColor: theme.colors.primary, maxWidth: '100%' }}
               ></div>
             </div>
-            <p style={{ color: theme.colors.text }}><strong>Soft Skills Score:</strong> {data.softSkillsScore}%</p>
-            <div className="progress-bar mb-2" style={{ borderColor: theme.colors.border }}>
+            <p style={{ color: theme.colors.text }}><strong>Soft Skills Score:</strong> {data.softSkillsScore.toFixed(1)}%</p>
+            <div className="progress-bar mt-1 mb-4" style={{ height: '12px', borderColor: theme.colors.border, backgroundColor: theme.colors.surface }}>
               <div
                 className="progress-fill"
-                style={{ width: `${data.softSkillsScore}%`, backgroundColor: theme.colors.accent }}
+                style={{ width: `${data.softSkillsScore}%`, height: '100%', backgroundColor: theme.colors.accent, maxWidth: '100%' }}
               ></div>
             </div>
           </div>
@@ -310,14 +310,16 @@ export default function SkillPassportDisplay({ data, themeName = 'default' }: Sk
 
       <style jsx>{`
         .progress-bar {
-          height: 8px;
+          height: 12px;
           background-color: ${theme.colors.surface};
-          border-radius: 4px;
+          border-radius: 6px;
           overflow: hidden;
+          border: 1px solid ${theme.colors.border};
         }
         .progress-fill {
           height: 100%;
           transition: width 0.3s ease;
+          border-radius: 5px;
         }
       `}</style>
     </div>
