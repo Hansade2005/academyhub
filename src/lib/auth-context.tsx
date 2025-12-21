@@ -1,20 +1,15 @@
 'use client';
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
-
-interface User {
-  id: string;
-  email: string;
-  full_name?: string;
-  avatar_url?: string;
-}
+import { pipilotAuthService, PipilotUser } from '@/lib/pipilot-auth-service';
 
 interface AuthContextType {
-  user: User | null;
-  login: (email: string, password: string) => Promise<boolean>;
-  signup: (email: string, password: string, full_name?: string) => Promise<boolean>;
-  logout: () => void;
+  user: PipilotUser | null;
+  login: (email: string, password: string) => Promise<void>;
+  signup: (email: string, password: string, full_name: string, avatar_url?: string) => Promise<void>;
+  logout: () => Promise<void>;
   loading: boolean;
+  initialized: boolean;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -28,91 +23,62 @@ export const useAuth = () => {
 };
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<PipilotUser | null>(null);
   const [loading, setLoading] = useState(true);
+  const [initialized, setInitialized] = useState(false);
 
   useEffect(() => {
     // Check if user is logged in on app start
     const checkAuth = async () => {
       try {
-        const response = await fetch('/api/auth/check', {
-          method: 'GET',
-          credentials: 'include',
-        });
-
-        if (response.ok) {
-          const userData = await response.json();
-          setUser(userData.user);
+        const authenticatedUser = await pipilotAuthService.getAuthenticatedUser();
+        if (authenticatedUser) {
+          setUser(authenticatedUser);
         }
       } catch (error) {
         console.error('Auth check failed:', error);
       } finally {
         setLoading(false);
+        setInitialized(true);
       }
     };
 
     checkAuth();
   }, []);
 
-  const login = async (email: string, password: string): Promise<boolean> => {
+  const login = async (email: string, password: string): Promise<void> => {
+    setLoading(true);
     try {
-      const response = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email, password }),
-        credentials: 'include',
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        setUser(data.user);
-        return true;
-      } else {
-        const error = await response.json();
-        throw new Error(error.message || 'Login failed');
-      }
+      const response = await pipilotAuthService.login(email, password);
+      setUser(response.user);
     } catch (error) {
       console.error('Login error:', error);
       throw error;
+    } finally {
+      setLoading(false);
     }
   };
 
-  const signup = async (email: string, password: string, full_name?: string): Promise<boolean> => {
+  const signup = async (email: string, password: string, full_name: string, avatar_url?: string): Promise<void> => {
+    setLoading(true);
     try {
-      const response = await fetch('/api/auth/signup', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email, password, full_name }),
-        credentials: 'include',
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        setUser(data.user);
-        return true;
-      } else {
-        const error = await response.json();
-        throw new Error(error.message || 'Signup failed');
-      }
+      const response = await pipilotAuthService.signup(email, password, full_name, avatar_url);
+      setUser(response.user);
     } catch (error) {
       console.error('Signup error:', error);
       throw error;
+    } finally {
+      setLoading(false);
     }
   };
 
-  const logout = async () => {
+  const logout = async (): Promise<void> => {
     try {
-      await fetch('/api/auth/logout', {
-        method: 'POST',
-        credentials: 'include',
-      });
+      await pipilotAuthService.logout();
+      setUser(null);
     } catch (error) {
       console.error('Logout error:', error);
-    } finally {
+      // Even if logout fails on the backend, clear local state
       setUser(null);
     }
   };
@@ -123,6 +89,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     signup,
     logout,
     loading,
+    initialized,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

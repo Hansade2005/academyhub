@@ -55,12 +55,29 @@ export default function SkillPassportDisplay({ data, themeName = 'default' }: Sk
         buttonRef.current.style.display = 'none';
       }
 
+      // Temporarily adjust the element to fit better in PDF
+      const originalWidth = passportRef.current.style.width;
+      const originalMaxWidth = passportRef.current.style.maxWidth;
+
+      // Set a fixed width that works well for PDF
+      passportRef.current.style.width = '210mm'; // A4 width
+      passportRef.current.style.maxWidth = '210mm';
+      passportRef.current.style.overflow = 'visible';
+
       const canvas = await html2canvas(passportRef.current, {
         scale: 2,
         useCORS: true,
         allowTaint: true,
         backgroundColor: theme.colors.background,
+        width: Math.min(passportRef.current.scrollWidth, 1000), // Limit width to avoid overflow
+        scrollX: 0,
+        scrollY: 0,
       });
+
+      // Restore original styles
+      passportRef.current.style.width = originalWidth;
+      passportRef.current.style.maxWidth = originalMaxWidth;
+      passportRef.current.style.overflow = '';
 
       // Show the button again
       if (buttonRef.current) {
@@ -70,23 +87,22 @@ export default function SkillPassportDisplay({ data, themeName = 'default' }: Sk
       const imgData = canvas.toDataURL('image/png');
       const pdf = new jsPDF('p', 'mm', 'a4');
 
-      const imgWidth = 210;
-      const pageHeight = 295;
+      const imgWidth = 210; // A4 width in mm
+      const pageHeight = 297; // A4 height in mm (standard)
       const imgHeight = (canvas.height * imgWidth) / canvas.width;
       let heightLeft = imgHeight;
 
-      let position = 0;
+      // Calculate number of pages needed
+      const numPages = Math.ceil(imgHeight / pageHeight);
 
-      // Add first page
-      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-      heightLeft -= pageHeight;
+      // Add pages
+      for (let i = 0; i < numPages; i++) {
+        if (i > 0) {
+          pdf.addPage();
+        }
 
-      // Add additional pages if needed
-      while (heightLeft > 0) {
-        position -= pageHeight; // Move up by page height for next page
-        pdf.addPage();
-        pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-        heightLeft -= pageHeight;
+        const yOffset = i * pageHeight;
+        pdf.addImage(imgData, 'PNG', 0, -yOffset, imgWidth, imgHeight, undefined, 'FAST');
       }
 
       pdf.save(`${data.name}_Skill_Passport.pdf`);
@@ -186,7 +202,8 @@ export default function SkillPassportDisplay({ data, themeName = 'default' }: Sk
         <h3 className={`${theme.fonts.heading} mb-4 text-lg`} style={{ color: theme.colors.text }}>
           Hard Skills – Task & Technical Ability
         </h3>
-        <div className="overflow-x-auto">
+        {/* Desktop/Tablet view: Table */}
+        <div className="overflow-x-auto block lg:hidden">
           <table className="min-w-full divide-y divide-gray-200" style={{ borderColor: theme.colors.border }}>
             <thead style={{ backgroundColor: theme.colors.surface }}>
               <tr>
@@ -212,6 +229,33 @@ export default function SkillPassportDisplay({ data, themeName = 'default' }: Sk
             </tbody>
           </table>
         </div>
+
+        {/* PDF/Print view: Card layout */}
+        <div className="hidden lg:block">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {data.hardSkills.map((skill, index) => (
+              <div
+                key={index}
+                className="p-4 border rounded-lg"
+                style={{
+                  borderColor: theme.colors.border,
+                  backgroundColor: theme.colors.surface
+                }}
+              >
+                <div className="flex justify-between items-start">
+                  <h4 className="font-bold" style={{ color: theme.colors.text }}>{skill.skill}</h4>
+                  <span className="font-bold ml-2" style={{ color: theme.colors.text }}>{skill.score}</span>
+                </div>
+                <div className="mt-2 grid grid-cols-2 gap-1 text-sm">
+                  <div><span className="font-medium">Level:</span> <span style={{ color: theme.colors.text }}>{skill.level}</span></div>
+                  <div><span className="font-medium">Weight:</span> <span style={{ color: theme.colors.text }}>{skill.weight}%</span></div>
+                  <div className="col-span-2"><span className="font-medium">Method:</span> <span style={{ color: theme.colors.text }}>{skill.method}</span></div>
+                  <div className="col-span-2"><span className="font-medium">Application:</span> <span style={{ color: theme.colors.text }}>{skill.application}</span></div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
         <div className="mt-4 text-sm" style={{ color: theme.colors.text }}>
           <p><strong>Overall Score:</strong> {data.hardSkillsScore.toFixed(1)}. Readiness Tier: {data.readinessTier} with Supervision</p>
           <p><strong>Weighted Confidence:</strong> 100% — All hard skill areas verified through experience or simulation</p>
@@ -230,7 +274,8 @@ export default function SkillPassportDisplay({ data, themeName = 'default' }: Sk
           Verified by the 3rd Academy.
           [Simulation Training & Assessment is standard across all soft skills.]
         </h3>
-        <div className="overflow-x-auto">
+        {/* Desktop/Tablet view: Table */}
+        <div className="overflow-x-auto block lg:hidden">
           <table className="min-w-full divide-y divide-gray-200" style={{ borderColor: theme.colors.border }}>
             <thead style={{ backgroundColor: theme.colors.surface }}>
               <tr>
@@ -255,6 +300,33 @@ export default function SkillPassportDisplay({ data, themeName = 'default' }: Sk
               ))}
             </tbody>
           </table>
+        </div>
+
+        {/* PDF/Print view: Card layout */}
+        <div className="hidden lg:block">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {data.softSkills.map((skill, index) => (
+              <div
+                key={index}
+                className="p-4 border rounded-lg"
+                style={{
+                  borderColor: theme.colors.border,
+                  backgroundColor: theme.colors.surface
+                }}
+              >
+                <div className="flex justify-between items-start">
+                  <h4 className="font-bold" style={{ color: theme.colors.text }}>{skill.skill}</h4>
+                  <span className="font-bold ml-2" style={{ color: theme.colors.text }}>{skill.score}</span>
+                </div>
+                <div className="mt-2 grid grid-cols-2 gap-1 text-sm">
+                  <div><span className="font-medium">Level:</span> <span style={{ color: theme.colors.text }}>{skill.level}</span></div>
+                  <div><span className="font-medium">Weight:</span> <span style={{ color: theme.colors.text }}>{skill.weight}%</span></div>
+                  <div className="col-span-2"><span className="font-medium">Method:</span> <span style={{ color: theme.colors.text }}>{skill.method}</span></div>
+                  <div className="col-span-2"><span className="font-medium">Application:</span> <span style={{ color: theme.colors.text }}>{skill.application}</span></div>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
         <div className="mt-4 text-sm" style={{ color: theme.colors.text }}>
           <p><strong>Overall Soft Skills Score:</strong> {data.softSkillsScore.toFixed(1)}. Readiness Tier: {data.readinessTier}</p>
@@ -327,6 +399,40 @@ export default function SkillPassportDisplay({ data, themeName = 'default' }: Sk
           height: 100%;
           transition: width 0.3s ease;
           border-radius: 5px;
+        }
+
+        /* Media query for print/PDF */
+        @media print {
+          .block, .hidden, .lg\\:block, .lg\\:hidden {
+            display: block !important;
+          }
+
+          /* Force tables to be full-width and readable in PDF */
+          table {
+            width: 100% !important;
+            table-layout: auto !important;
+            font-size: 0.8em !important;
+          }
+
+          /* Reduce padding in PDF for tables */
+          th, td {
+            padding: 4px 2px !important;
+          }
+
+          /* For PDF, convert tables to a more readable card-like format */
+          .pdf-card-layout {
+            display: block;
+          }
+        }
+
+        /* Media query for larger screens to show tables */
+        @media (min-width: 1024px) {
+          .lg\\:hidden {
+            display: none;
+          }
+          .lg\\:block {
+            display: block;
+          }
         }
       `}</style>
     </div>

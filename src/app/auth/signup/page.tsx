@@ -45,15 +45,26 @@ export default function SignupPage() {
       return;
     }
 
-    if (formData.password.length < 6) {
-      setError('Password must be at least 6 characters long');
+    if (formData.password.length < 8) {
+      setError('Password must be at least 8 characters long and contain uppercase, lowercase, and number');
+      setIsLoading(false);
+      return;
+    }
+
+    // Check password requirements
+    const hasUpperCase = /[A-Z]/.test(formData.password);
+    const hasLowerCase = /[a-z]/.test(formData.password);
+    const hasNumber = /[0-9]/.test(formData.password);
+
+    if (!hasUpperCase || !hasLowerCase || !hasNumber) {
+      setError('Password must contain at least one uppercase letter, one lowercase letter, and one number');
       setIsLoading(false);
       return;
     }
 
     try {
       await signup(formData.email, formData.password, formData.fullName);
-      router.push('/');
+      router.push('/'); // Redirect to home after successful signup
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Signup failed');
     } finally {
