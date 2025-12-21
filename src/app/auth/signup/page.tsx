@@ -6,7 +6,6 @@ import { Mail, Lock, User, Eye, EyeOff, Loader2, ArrowLeft, ArrowRight, Check, M
 import { useAuth } from '@/lib/auth-context';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { motion, AnimatePresence } from 'framer-motion';
 
 interface AnalyticsData {
   demographics: {
