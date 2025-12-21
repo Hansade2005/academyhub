@@ -37,8 +37,8 @@ interface PipilotVerifyResponse {
 }
 
 const API_BASE = 'https://pipilot.dev/api/v1/databases';
-const DATABASE_ID = process.env.NEXT_PUBLIC_PIPILOT_DATABASE_ID || '';
-const API_KEY = process.env.PIPILOT_API_KEY || '';
+const DATABASE_ID = process.env.NEXT_PUBLIC_PIPILOT_DATABASE_ID || '41';
+const API_KEY = process.env.PIPILOT_API_KEY || 'sk_live_9f10eac8ea3e82872abe9a6f2d14b83ac43dbdc7e8491975676004e74afd90ec';
 
 if (!DATABASE_ID || !API_KEY) {
   console.warn('PiPilot API credentials not configured. Authentication will not work.');
