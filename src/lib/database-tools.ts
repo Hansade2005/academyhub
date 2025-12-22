@@ -247,6 +247,15 @@ export const getJobPostings = async (filters?: any) => {
   return { ...response, data: mappedData };
 };
 
+export const createJobPosting = async (employerId: string, title: string, description: string, requirements: any) => {
+  return await insertTableRecord(TABLE_IDS.job_postings, {
+    employer_id: employerId,
+    title,
+    description,
+    requirements
+  });
+};
+
 export const getApplicationsForEmployer = async (employerId: string) => {
   // Get all applications and filter by employer's job postings
   const applicationsResponse = await queryTable(TABLE_IDS.applications, {});
