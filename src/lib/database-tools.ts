@@ -103,15 +103,15 @@ export const getUserSkillPassports = async (userId: string) => {
     // Get all skill passport records and filter by user_id client-side
     const response = await queryTable(TABLE_IDS.skill_passports, {});
 
-    // Filter records where user_id matches
+    // Filter records where user_id matches (check both top-level and data_json)
     const filteredData = response.data
-      .filter((record: any) => record.user_id === userId)
+      .filter((record: any) => record.user_id === userId || record.data_json?.user_id === userId)
       .map((record: any) => ({
         id: record.id,
-        user_id: record.user_id,
-        title: record.title,
-        content: record.content,
-        confidence_score: record.confidence_score,
+        user_id: record.user_id || record.data_json?.user_id,
+        title: record.title || record.data_json?.title,
+        content: record.content || record.data_json,
+        confidence_score: record.confidence_score || record.data_json?.confidence_score,
         created_at: record.created_at,
         updated_at: record.updated_at
       }));
@@ -141,16 +141,16 @@ export const getUserProgress = async (userId: string) => {
     // Get all progress records and filter by user_id client-side
     const response = await queryTable(TABLE_IDS.progress_tracking, {});
 
-    // Filter records where user_id matches
+    // Filter records where user_id matches (check both top-level and data_json)
     const filteredData = response.data
-      .filter((record: any) => record.user_id === userId)
+      .filter((record: any) => record.user_id === userId || record.data_json?.user_id === userId)
       .map((record: any) => ({
         id: record.id,
-        user_id: record.user_id,
-        skill: record.skill,
-        level: record.level,
-        score: record.score,
-        date: record.date
+        user_id: record.user_id || record.data_json?.user_id,
+        skill: record.skill || record.data_json?.skill,
+        level: record.level || record.data_json?.level,
+        score: record.score || record.data_json?.score,
+        date: record.date || record.data_json?.date
       }));
 
     return { ...response, data: filteredData as unknown as ProgressEntry[] };
@@ -212,12 +212,22 @@ export const createSimulation = async (userId: string, simulationType: string, r
 };
 
 export const getJobPostings = async (filters?: any) => {
-  const options: any = { orderBy: { field: 'created_at', direction: 'DESC' } };
+  // Get all job postings and filter client-side
+  const response = await queryTable(TABLE_IDS.job_postings, {});
+
+  let filteredData = response.data;
+
+  // Apply client-side filters if provided
   if (filters) {
-    options.whereConditions = [];
-    if (filters.status) options.whereConditions.push({ field: 'status', operator: '=', value: filters.status });
+    if (filters.status) {
+      filteredData = filteredData.filter((job: any) => job.status === filters.status);
+    }
   }
-  return await queryTable(TABLE_IDS.job_postings, options);
+
+  // Sort by created_at DESC
+  filteredData.sort((a: any, b: any) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+
+  return { ...response, data: filteredData };
 };
 
 export const createJobPosting = async (employerId: string, title: string, description: string, requirements: any) => {
@@ -235,16 +245,16 @@ export const getUserApplications = async (userId: string) => {
     orderBy: { field: 'applied_at', direction: 'DESC' }
   });
 
-  // Filter records where user_id matches
+  // Filter records where user_id matches (check both top-level and data_json)
   const filteredData = response.data
-    .filter((record: any) => record.user_id === userId)
+    .filter((record: any) => record.user_id === userId || record.data_json?.user_id === userId)
     .map((record: any) => ({
       id: record.id,
-      user_id: record.user_id,
-      job_id: record.job_id,
-      status: record.status,
-      applied_at: record.applied_at,
-      cover_letter: record.cover_letter
+      user_id: record.user_id || record.data_json?.user_id,
+      job_id: record.job_id || record.data_json?.job_id,
+      status: record.status || record.data_json?.status,
+      applied_at: record.applied_at || record.data_json?.applied_at,
+      cover_letter: record.cover_letter || record.data_json?.cover_letter
     }));
 
   return { ...response, data: filteredData as unknown as any[] };
@@ -262,19 +272,19 @@ export const getUserPortfolios = async (userId: string) => {
     // Get all portfolio records and filter by user_id client-side
     const response = await queryTable(TABLE_IDS.portfolios, {});
 
-    // Filter records where user_id matches
+    // Filter records where user_id matches (check both top-level and data_json)
     const filteredData = response.data
-      .filter((record: any) => record.user_id === userId)
+      .filter((record: any) => record.user_id === userId || record.data_json?.user_id === userId)
       .map((record: any) => ({
         id: record.id,
-        user_id: record.user_id,
-        title: record.title,
-        description: record.description,
-        links: record.links,
+        user_id: record.user_id || record.data_json?.user_id,
+        title: record.title || record.data_json?.title,
+        description: record.description || record.data_json?.description,
+        links: record.links || record.data_json?.links,
         created_at: record.created_at,
-        status: record.status,
-        category: record.category,
-        technologies: record.technologies
+        status: record.status || record.data_json?.status,
+        category: record.category || record.data_json?.category,
+        technologies: record.technologies || record.data_json?.technologies
       }));
 
     return { ...response, data: filteredData as unknown as any[] };
@@ -299,16 +309,16 @@ export const getUserCredentials = async (userId: string) => {
     orderBy: { field: 'issued_at', direction: 'DESC' }
   });
 
-  // Filter records where user_id matches
+  // Filter records where user_id matches (check both top-level and data_json)
   const filteredData = response.data
-    .filter((record: any) => record.user_id === userId)
+    .filter((record: any) => record.user_id === userId || record.data_json?.user_id === userId)
     .map((record: any) => ({
       id: record.id,
-      user_id: record.user_id,
-      type: record.type,
-      data: record.data,
-      issued_at: record.issued_at,
-      expires_at: record.expires_at
+      user_id: record.user_id || record.data_json?.user_id,
+      type: record.type || record.data_json?.type,
+      data: record.data || record.data_json?.data,
+      issued_at: record.issued_at || record.data_json?.issued_at,
+      expires_at: record.expires_at || record.data_json?.expires_at
     }));
 
   return { ...response, data: filteredData };
@@ -329,17 +339,17 @@ export const getUserFiles = async (userId: string) => {
     orderBy: { field: 'uploaded_at', direction: 'DESC' }
   });
 
-  // Filter records where user_id matches
+  // Filter records where user_id matches (check both top-level and data_json)
   const filteredData = response.data
-    .filter((record: any) => record.user_id === userId)
+    .filter((record: any) => record.user_id === userId || record.data_json?.user_id === userId)
     .map((record: any) => ({
       id: record.id,
-      user_id: record.user_id,
-      filename: record.filename,
-      file_url: record.file_url,
-      file_type: record.file_type,
-      file_size: record.file_size,
-      uploaded_at: record.uploaded_at
+      user_id: record.user_id || record.data_json?.user_id,
+      filename: record.filename || record.data_json?.filename,
+      file_url: record.file_url || record.data_json?.file_url,
+      file_type: record.file_type || record.data_json?.file_type,
+      file_size: record.file_size || record.data_json?.file_size,
+      uploaded_at: record.uploaded_at || record.data_json?.uploaded_at
     }));
 
   return { ...response, data: filteredData };
@@ -351,16 +361,16 @@ export const getUserProjects = async (userId: string) => {
     orderBy: { field: 'created_at', direction: 'DESC' }
   });
 
-  // Filter records where user_id matches
+  // Filter records where user_id matches (check both top-level and data_json)
   const filteredData = response.data
-    .filter((record: any) => record.user_id === userId)
+    .filter((record: any) => record.user_id === userId || record.data_json?.user_id === userId)
     .map((record: any) => ({
       id: record.id,
-      user_id: record.user_id,
-      title: record.title,
-      description: record.description,
-      contract_value: record.contract_value,
-      status: record.status,
+      user_id: record.user_id || record.data_json?.user_id,
+      title: record.title || record.data_json?.title,
+      description: record.description || record.data_json?.description,
+      contract_value: record.contract_value || record.data_json?.contract_value,
+      status: record.status || record.data_json?.status,
       created_at: record.created_at,
       updated_at: record.updated_at
     }));
@@ -484,16 +494,16 @@ export const getMentorFeedback = async (userId: string) => {
     orderBy: { field: 'date', direction: 'DESC' }
   });
 
-  // Filter records where user_id matches
+  // Filter records where user_id matches (check both top-level and data_json)
   const filteredData = response.data
-    .filter((record: any) => record.user_id === userId)
+    .filter((record: any) => record.user_id === userId || record.data_json?.user_id === userId)
     .map((record: any) => ({
       id: record.id,
-      user_id: record.user_id,
-      mentor_id: record.mentor_id,
-      feedback: record.feedback,
-      rating: record.rating,
-      date: record.date
+      user_id: record.user_id || record.data_json?.user_id,
+      mentor_id: record.mentor_id || record.data_json?.mentor_id,
+      feedback: record.feedback || record.data_json?.feedback,
+      rating: record.rating || record.data_json?.rating,
+      date: record.date || record.data_json?.date
     }));
 
   return { ...response, data: filteredData as unknown as MentorFeedback[] };
@@ -525,18 +535,18 @@ export const getUserAnalyticsProfile = async (userId: string) => {
   // Get all analytics profile records and filter by user_id client-side
   const response = await queryTable(TABLE_IDS.user_analytics_profiles, {});
 
-  // Filter records where user_id matches
+  // Filter records where user_id matches (check both top-level and data_json)
   const filteredData = response.data
-    .filter((record: any) => record.user_id === userId)
+    .filter((record: any) => record.user_id === userId || record.data_json?.user_id === userId)
     .map((record: any) => ({
       id: record.id,
-      user_id: record.user_id,
-      demographics: record.demographics,
-      professional_background: record.professional_background,
-      career_goals: record.career_goals,
-      learning_preferences: record.learning_preferences,
-      discovery_source: record.discovery_source,
-      marketing_consent: record.marketing_consent,
+      user_id: record.user_id || record.data_json?.user_id,
+      demographics: record.demographics || record.data_json?.demographics,
+      professional_background: record.professional_background || record.data_json?.professional_background,
+      career_goals: record.career_goals || record.data_json?.career_goals,
+      learning_preferences: record.learning_preferences || record.data_json?.learning_preferences,
+      discovery_source: record.discovery_source || record.data_json?.discovery_source,
+      marketing_consent: record.marketing_consent || record.data_json?.marketing_consent,
       created_at: record.created_at,
       updated_at: record.updated_at
     }));
