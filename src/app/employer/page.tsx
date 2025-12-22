@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useAuth } from '@/lib/auth-context';
-import { createJobPosting, getJobPostings, getUserApplications } from '@/lib/database-tools';
+import { createJobPosting, getJobPostings, getUserApplications, getApplicationsForEmployer } from '@/lib/database-tools';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -74,9 +74,9 @@ export default function EmployerDashboard() {
       const filteredJobs = (employerJobs as any)?.data?.filter((job: JobPosting) => job.employer_id === user?.id) || [];
       setJobs(filteredJobs);
 
-      // Load all applications (in a real app, you'd filter by employer's jobs)
-      // For now, we'll show a sample
-      setApplications([]);
+      // Load applications for this employer's jobs
+      const applicationsResponse = await getApplicationsForEmployer(user!.id);
+      setApplications((applicationsResponse as any)?.data || []);
     } catch (error) {
       console.error('Error loading employer data:', error);
       toast.error('Failed to load dashboard data');

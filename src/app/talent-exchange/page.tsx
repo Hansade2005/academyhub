@@ -149,7 +149,7 @@ export default function TalentExchangePage() {
 
   const loadJobs = async () => {
     try {
-      const jobData = await getJobPostings({ status: 'active' });
+      const jobData = await getJobPostings({ status: 'open' });
       const jobsList = (jobData as any)?.data || [];
 
       if (userProfile) {

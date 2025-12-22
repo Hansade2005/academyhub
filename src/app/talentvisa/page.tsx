@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useAuth } from '@/lib/auth-context';
-import { getUserSkillPassports, getUserProgress, getUserSimulations, calculateConfidenceScore } from '@/lib/database-tools';
+import { getUserSkillPassports, getUserProgress, getUserSimulations, calculateConfidenceScore, getMentorFeedback } from '@/lib/database-tools';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -51,11 +51,12 @@ export default function TalentVisaPage() {
       const confidenceScore = await calculateConfidenceScore(user!.id);
 
       // Check requirements
+      const mentorFeedbackData = await getMentorFeedback(user!.id);
       const requirements = {
         skillPassport: passports.data && passports.data.length > 0,
         simulations: simulations.data && simulations.data.length >= 3,
         progressTracking: progress.data && progress.data.length >= 5,
-        mentorFeedback: false // TODO: implement mentor feedback check
+        mentorFeedback: mentorFeedbackData.data && mentorFeedbackData.data.length > 0
       };
 
       const isEligible = Object.values(requirements).every(req => req) && confidenceScore >= 70;

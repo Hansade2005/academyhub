@@ -115,11 +115,11 @@ export default function MentorsPage() {
 
   const loadFeedback = async () => {
     try {
-      // In a real app, this would fetch feedback from the database
-      // For now, we'll show mock data
-      setFeedback([]);
+      const feedbackData = await getMentorFeedback(user!.id);
+      setFeedback((feedbackData as any).data || []);
     } catch (error) {
       console.error('Failed to load feedback:', error);
+      setFeedback([]);
     }
   };
 
@@ -128,11 +128,11 @@ export default function MentorsPage() {
 
     setLoading(true);
     try {
-      // In a real implementation, this would save to database
-      // await addMentorFeedback(user.id, selectedMentor.id, feedbackText, rating);
-
-      // Mock success
-      alert(`Feedback submitted to ${selectedMentor.name}!`);
+      await addMentorFeedback(user.id, selectedMentor.id, feedbackText, rating);
+      
+      // Reload feedback after submission
+      await loadFeedback();
+      
       setFeedbackText('');
       setRating(5);
       setSelectedMentor(null);

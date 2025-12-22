@@ -220,23 +220,56 @@ export const getJobPostings = async (filters?: any) => {
   // Apply client-side filters if provided
   if (filters) {
     if (filters.status) {
-      filteredData = filteredData.filter((job: any) => job.status === filters.status);
+      // Check both top-level status and data_json status, default to 'open' if not set
+      filteredData = filteredData.filter((job: any) =>
+        (job.status || job.data_json?.status || 'open') === filters.status
+      );
     }
   }
 
-  // Sort by created_at DESC
-  filteredData.sort((a: any, b: any) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+  // Map data to include fields from data_json
+  const mappedData = filteredData.map((job: any) => ({
+    id: job.id,
+    employer_id: job.employer_id || job.data_json?.employer_id,
+    title: job.title || job.data_json?.title,
+    description: job.description || job.data_json?.description,
+    requirements: job.requirements || job.data_json?.requirements,
+    location: job.location || job.data_json?.requirements?.location,
+    salary_range: job.salary_range || job.data_json?.requirements?.salary_range,
+    employment_type: job.employment_type || job.data_json?.requirements?.employment_type,
+    created_at: job.created_at,
+    status: job.status || job.data_json?.status || 'open'
+  }));
 
-  return { ...response, data: filteredData };
+  // Sort by created_at DESC
+  mappedData.sort((a: any, b: any) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+
+  return { ...response, data: mappedData };
 };
 
-export const createJobPosting = async (employerId: string, title: string, description: string, requirements: any) => {
-  return await insertTableRecord(TABLE_IDS.job_postings, {
-    employer_id: employerId,
-    title,
-    description,
-    requirements
-  });
+export const getApplicationsForEmployer = async (employerId: string) => {
+  // Get all applications and filter by employer's job postings
+  const applicationsResponse = await queryTable(TABLE_IDS.applications, {});
+  const jobsResponse = await getJobPostings();
+
+  // Get job IDs posted by this employer
+  const employerJobIds = (jobsResponse as any)?.data
+    ?.filter((job: any) => job.employer_id === employerId)
+    ?.map((job: any) => job.id) || [];
+
+  // Filter applications for employer's jobs
+  const filteredApplications = applicationsResponse.data
+    .filter((app: any) => employerJobIds.includes(app.job_id || app.data_json?.job_id))
+    .map((app: any) => ({
+      id: app.id,
+      user_id: app.user_id || app.data_json?.user_id,
+      job_id: app.job_id || app.data_json?.job_id,
+      status: app.status || app.data_json?.status || 'pending',
+      applied_at: app.applied_at || app.data_json?.applied_at,
+      cover_letter: app.cover_letter || app.data_json?.cover_letter
+    }));
+
+  return { ...applicationsResponse, data: filteredApplications };
 };
 
 export const getUserApplications = async (userId: string) => {
