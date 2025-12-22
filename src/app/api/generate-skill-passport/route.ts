@@ -3,6 +3,7 @@ import { z } from 'zod';
 
 const API_BASE = 'https://pipilot.dev/api/v1/databases';
 const DATABASE_ID = process.env.NEXT_PUBLIC_PIPILOT_DATABASE_ID || '41';
+const API_KEY = process.env.PIPILOT_API_KEY || 'sk_live_db3a12d669e420721b56a98ba13924d5815f6e349bbeb44b1725acd252dae5a2';
 
 const SkillPassportSchema = z.object({
   name: z.string(),
@@ -284,9 +285,10 @@ export async function POST(req: NextRequest) {
     const verifyResponse = await fetch(`${API_BASE}/${DATABASE_ID}/auth/verify`, {
       method: 'POST',
       headers: {
+        'Authorization': `Bearer ${API_KEY}`,
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`,
       },
+      body: JSON.stringify({ token }),
     });
 
     if (!verifyResponse.ok) {

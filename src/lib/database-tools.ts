@@ -27,7 +27,7 @@ export interface Simulation {
   simulation_type: string;
   results: any;
   score: number;
-  completed_at: string;
+  created_at: string;
 }
 
 export interface MentorFeedback {
@@ -99,11 +99,28 @@ export const uploadFile = async (file: File, isPublic: boolean = true, metadata?
 
 // Specific functions for The 3rd Academy
 export const getUserSkillPassports = async (userId: string) => {
-  const response = await queryTable(TABLE_IDS.skill_passports, {
-    where: { user_id: userId },
-    orderBy: { field: 'created_at', direction: 'DESC' }
-  });
-  return { ...response, data: response.data as unknown as SkillPassport[] };
+  try {
+    // Get all skill passport records and filter by user_id client-side
+    const response = await queryTable(TABLE_IDS.skill_passports, {});
+
+    // Filter records where user_id matches
+    const filteredData = response.data
+      .filter((record: any) => record.user_id === userId)
+      .map((record: any) => ({
+        id: record.id,
+        user_id: record.user_id,
+        title: record.title,
+        content: record.content,
+        confidence_score: record.confidence_score,
+        created_at: record.created_at,
+        updated_at: record.updated_at
+      }));
+
+    return { ...response, data: filteredData as unknown as SkillPassport[] };
+  } catch (error) {
+    console.error('Error in getUserSkillPassports:', error);
+    return { data: [], success: false, message: 'Failed to load skill passport data' };
+  }
 };
 
 export const createSkillPassport = async (userId: string, title: string, content: any, confidenceScore?: number) => {
@@ -120,11 +137,28 @@ export const createSkillPassport = async (userId: string, title: string, content
   });
 };
 export const getUserProgress = async (userId: string) => {
-  const response = await queryTable(TABLE_IDS.progress_tracking, {
-    where: { user_id: userId },
-    orderBy: { field: 'date', direction: 'DESC' }
-  });
-  return { ...response, data: response.data as unknown as ProgressEntry[] };
+  try {
+    // Get all progress records and filter by user_id client-side
+    const response = await queryTable(TABLE_IDS.progress_tracking, {});
+
+    // Filter records where user_id matches
+    const filteredData = response.data
+      .filter((record: any) => record.user_id === userId)
+      .map((record: any) => ({
+        id: record.id,
+        user_id: record.user_id,
+        skill: record.skill,
+        level: record.level,
+        score: record.score,
+        date: record.date
+      }));
+
+    return { ...response, data: filteredData as unknown as ProgressEntry[] };
+  } catch (error) {
+    console.error('Error in getUserProgress:', error);
+    // Return empty data on error to prevent the whole portfolio from failing
+    return { data: [], success: false, message: 'Failed to load progress data' };
+  }
 };
 
 export const addProgressEntry = async (userId: string, skill: string, level: string, score: number) => {
@@ -145,11 +179,27 @@ export const logAnalyticsEvent = async (userId: string | null, eventType: string
 };
 
 export const getUserSimulations = async (userId: string) => {
-  const response = await queryTable(TABLE_IDS.simulations, {
-    where: { user_id: userId },
-    orderBy: { field: 'completed_at', direction: 'DESC' }
-  });
-  return { ...response, data: response.data as unknown as Simulation[] };
+  try {
+    // Get all simulation records and filter by user_id in data_json
+    const response = await queryTable(TABLE_IDS.simulations, {});
+
+    // Filter records where data_json contains the matching user_id and transform data
+    const filteredData = response.data
+      .filter((record: any) => record.data_json && record.data_json.user_id === userId)
+      .map((record: any) => ({
+        id: record.id,
+        user_id: record.data_json.user_id,
+        simulation_type: record.data_json.simulation_type,
+        results: record.data_json.results,
+        score: record.data_json.score,
+        created_at: record.created_at
+      }));
+
+    return { ...response, data: filteredData as unknown as Simulation[] };
+  } catch (error) {
+    console.error('Error in getUserSimulations:', error);
+    return { data: [], success: false, message: 'Failed to load simulation data' };
+  }
 };
 
 export const createSimulation = async (userId: string, simulationType: string, results: any, score: number) => {
@@ -180,11 +230,24 @@ export const createJobPosting = async (employerId: string, title: string, descri
 };
 
 export const getUserApplications = async (userId: string) => {
+  // Get all application records and filter by user_id client-side
   const response = await queryTable(TABLE_IDS.applications, {
-    where: { user_id: userId },
     orderBy: { field: 'applied_at', direction: 'DESC' }
   });
-  return { ...response, data: response.data as unknown as any[] };
+
+  // Filter records where user_id matches
+  const filteredData = response.data
+    .filter((record: any) => record.user_id === userId)
+    .map((record: any) => ({
+      id: record.id,
+      user_id: record.user_id,
+      job_id: record.job_id,
+      status: record.status,
+      applied_at: record.applied_at,
+      cover_letter: record.cover_letter
+    }));
+
+  return { ...response, data: filteredData as unknown as any[] };
 };
 
 export const applyToJob = async (userId: string, jobId: string) => {
@@ -195,11 +258,30 @@ export const applyToJob = async (userId: string, jobId: string) => {
 };
 
 export const getUserPortfolios = async (userId: string) => {
-  const response = await queryTable(TABLE_IDS.portfolios, {
-    where: { user_id: userId },
-    orderBy: { field: 'created_at', direction: 'DESC' }
-  });
-  return { ...response, data: response.data as unknown as any[] };
+  try {
+    // Get all portfolio records and filter by user_id client-side
+    const response = await queryTable(TABLE_IDS.portfolios, {});
+
+    // Filter records where user_id matches
+    const filteredData = response.data
+      .filter((record: any) => record.user_id === userId)
+      .map((record: any) => ({
+        id: record.id,
+        user_id: record.user_id,
+        title: record.title,
+        description: record.description,
+        links: record.links,
+        created_at: record.created_at,
+        status: record.status,
+        category: record.category,
+        technologies: record.technologies
+      }));
+
+    return { ...response, data: filteredData as unknown as any[] };
+  } catch (error) {
+    console.error('Error in getUserPortfolios:', error);
+    return { data: [], success: false, message: 'Failed to load portfolio data' };
+  }
 };
 
 export const createPortfolio = async (userId: string, title: string, description: string, links?: any) => {
@@ -212,10 +294,24 @@ export const createPortfolio = async (userId: string, title: string, description
 };
 
 export const getUserCredentials = async (userId: string) => {
-  return await queryTable(TABLE_IDS.credentials, {
-    where: { user_id: userId },
+  // Get all credential records and filter by user_id client-side
+  const response = await queryTable(TABLE_IDS.credentials, {
     orderBy: { field: 'issued_at', direction: 'DESC' }
   });
+
+  // Filter records where user_id matches
+  const filteredData = response.data
+    .filter((record: any) => record.user_id === userId)
+    .map((record: any) => ({
+      id: record.id,
+      user_id: record.user_id,
+      type: record.type,
+      data: record.data,
+      issued_at: record.issued_at,
+      expires_at: record.expires_at
+    }));
+
+  return { ...response, data: filteredData };
 };
 
 export const issueCredential = async (userId: string, type: string, data: any, expiresAt?: string) => {
@@ -228,17 +324,48 @@ export const issueCredential = async (userId: string, type: string, data: any, e
 };
 
 export const getUserFiles = async (userId: string) => {
-  return await queryTable(TABLE_IDS.files, {
-    where: { user_id: userId },
+  // Get all file records and filter by user_id client-side
+  const response = await queryTable(TABLE_IDS.files, {
     orderBy: { field: 'uploaded_at', direction: 'DESC' }
   });
+
+  // Filter records where user_id matches
+  const filteredData = response.data
+    .filter((record: any) => record.user_id === userId)
+    .map((record: any) => ({
+      id: record.id,
+      user_id: record.user_id,
+      filename: record.filename,
+      file_url: record.file_url,
+      file_type: record.file_type,
+      file_size: record.file_size,
+      uploaded_at: record.uploaded_at
+    }));
+
+  return { ...response, data: filteredData };
 };
 
 export const getUserProjects = async (userId: string) => {
-  return await queryTable(TABLE_IDS.projects, {
-    where: { user_id: userId },
+  // Get all project records and filter by user_id client-side
+  const response = await queryTable(TABLE_IDS.projects, {
     orderBy: { field: 'created_at', direction: 'DESC' }
   });
+
+  // Filter records where user_id matches
+  const filteredData = response.data
+    .filter((record: any) => record.user_id === userId)
+    .map((record: any) => ({
+      id: record.id,
+      user_id: record.user_id,
+      title: record.title,
+      description: record.description,
+      contract_value: record.contract_value,
+      status: record.status,
+      created_at: record.created_at,
+      updated_at: record.updated_at
+    }));
+
+  return { ...response, data: filteredData };
 };
 
 export const createProject = async (userId: string, title: string, description: string, contractValue?: number) => {
@@ -352,11 +479,24 @@ const calculateVolumeScore = (progress: ProgressEntry[], simulations: Simulation
 };
 
 export const getMentorFeedback = async (userId: string) => {
+  // Get all mentor feedback records and filter by user_id client-side
   const response = await queryTable(TABLE_IDS.mentor_feedback, {
-    where: { user_id: userId },
     orderBy: { field: 'date', direction: 'DESC' }
   });
-  return { ...response, data: response.data as unknown as MentorFeedback[] };
+
+  // Filter records where user_id matches
+  const filteredData = response.data
+    .filter((record: any) => record.user_id === userId)
+    .map((record: any) => ({
+      id: record.id,
+      user_id: record.user_id,
+      mentor_id: record.mentor_id,
+      feedback: record.feedback,
+      rating: record.rating,
+      date: record.date
+    }));
+
+  return { ...response, data: filteredData as unknown as MentorFeedback[] };
 };
 
 export const addMentorFeedback = async (userId: string, mentorId: string, feedback: string, rating: number) => {
@@ -382,10 +522,26 @@ export const createUserAnalyticsProfile = async (userId: string, analyticsData: 
 };
 
 export const getUserAnalyticsProfile = async (userId: string) => {
-  const response = await queryTable(TABLE_IDS.user_analytics_profiles, {
-    where: { user_id: userId }
-  });
-  return response;
+  // Get all analytics profile records and filter by user_id client-side
+  const response = await queryTable(TABLE_IDS.user_analytics_profiles, {});
+
+  // Filter records where user_id matches
+  const filteredData = response.data
+    .filter((record: any) => record.user_id === userId)
+    .map((record: any) => ({
+      id: record.id,
+      user_id: record.user_id,
+      demographics: record.demographics,
+      professional_background: record.professional_background,
+      career_goals: record.career_goals,
+      learning_preferences: record.learning_preferences,
+      discovery_source: record.discovery_source,
+      marketing_consent: record.marketing_consent,
+      created_at: record.created_at,
+      updated_at: record.updated_at
+    }));
+
+  return { ...response, data: filteredData };
 };
 
 export const updateUserAnalyticsProfile = async (userId: string, analyticsData: any) => {

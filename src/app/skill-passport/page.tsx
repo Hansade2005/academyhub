@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import * as pdfjsLib from "pdfjs-dist";
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
@@ -46,23 +46,31 @@ async function extractTextFromPDF(pdf: any): Promise<string> {
 }
 
 export default function SkillPassportPage() {
-  const { user } = useAuth();
+  const { user, loading: authLoading } = useAuth();
   const [preview, setPreview] = useState<string | null>(null);
-  const [output, setOutput] = useState<string>("");
-  const [result, setResult] = useState<any | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [result, setResult] = useState<any>(null);
+  const [output, setOutput] = useState<string>('');
   const [selectedTheme, setSelectedTheme] = useLocalStorage<ThemeName>('skill-passport-theme', 'default');
 
-  if (!user) {
+  // Redirect to login if not authenticated
+  useEffect(() => {
+    if (!authLoading && !user) {
+      window.location.href = '/auth/login';
+    }
+  }, [user, authLoading]);
+
+  if (authLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold mb-4">Access Denied</h1>
-          <p>Please log in to generate skill passports.</p>
-        </div>
+      <div className="min-h-screen bg-black text-gray-300 font-sans flex items-center justify-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
       </div>
     );
+  }
+
+  if (!user) {
+    return null; // Will redirect
   }
 
   async function processPDF(file: File) {
@@ -130,7 +138,14 @@ export default function SkillPassportPage() {
       const formData = new FormData();
       formData.append('text', output);
 
+      // Get fresh token from auth service
       const { accessToken } = pipilotAuthService.retrieveTokens();
+
+      if (!accessToken) {
+        throw new Error('No authentication token found. Please log in again.');
+      }
+
+      console.log('Using access token:', accessToken.substring(0, 20) + '...');
 
       const response = await fetch('/api/generate-skill-passport', {
         method: 'POST',
@@ -143,6 +158,14 @@ export default function SkillPassportPage() {
       if (!response.ok) {
         const errorData = await response.json();
         console.error('API response not ok:', errorData);
+
+        // If token is invalid, redirect to login
+        if (response.status === 401) {
+          pipilotAuthService.clearTokens();
+          window.location.href = '/auth/login';
+          return;
+        }
+
         throw new Error(errorData.error || 'Failed to generate skill passport');
       }
 

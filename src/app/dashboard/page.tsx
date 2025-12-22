@@ -127,7 +127,7 @@ export default function Dashboard() {
         ...(simRes.data?.slice(0, 2).map((s: any) => ({
           type: 'simulation',
           title: `Completed ${s.simulation_type} assessment`,
-          time: s.completed_at,
+          time: s.created_at,
           icon: '🎯'
         })) || [])
       ].sort((a, b) => new Date(b.time).getTime() - new Date(a.time).getTime());

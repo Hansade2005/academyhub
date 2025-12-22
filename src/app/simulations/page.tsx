@@ -34,7 +34,7 @@ interface Simulation {
   id: string;
   simulation_type: string;
   score: number;
-  completed_at: string;
+  created_at: string;
   results: any;
 }
 
@@ -609,7 +609,7 @@ Return ONLY the JSON object with no additional text.`;
     return completedSim ? {
       completed: true,
       score: completedSim.score,
-      date: completedSim.completed_at,
+      date: completedSim.created_at,
       results: completedSim.results
     } : null;
   };
@@ -1172,7 +1172,7 @@ Return ONLY the JSON object with no additional text.`;
                             {simType?.title || sim.simulation_type}
                           </p>
                           <p className="text-sm text-gray-500">
-                            {new Date(sim.completed_at).toLocaleDateString()}
+                            {new Date(sim.created_at).toLocaleDateString()}
                           </p>
                         </div>
                       </div>

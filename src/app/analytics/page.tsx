@@ -205,7 +205,7 @@ export default function AnalyticsPage() {
                       <div>
                         <p className="font-medium">{sim.simulation_type}</p>
                         <p className="text-sm text-gray-500">
-                          {new Date(sim.completed_at).toLocaleDateString()}
+                          {new Date(sim.created_at).toLocaleDateString()}
                         </p>
                       </div>
                       <div className="text-right">

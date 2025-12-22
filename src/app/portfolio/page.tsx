@@ -58,11 +58,32 @@ export default function PortfolioPage() {
 
   const loadPortfolioData = async () => {
     try {
+      // Load data individually to prevent one failure from blocking others
+      const portfolioPromise = getUserPortfolios(user!.id).catch(error => {
+        console.error('Failed to load portfolios:', error);
+        return { data: [] };
+      });
+
+      const passportPromise = getUserSkillPassports(user!.id).catch(error => {
+        console.error('Failed to load skill passports:', error);
+        return { data: [] };
+      });
+
+      const progressPromise = getUserProgress(user!.id).catch(error => {
+        console.error('Failed to load progress:', error);
+        return { data: [] };
+      });
+
+      const simulationPromise = getUserSimulations(user!.id).catch(error => {
+        console.error('Failed to load simulations:', error);
+        return { data: [] };
+      });
+
       const [portfolioData, passportData, progressData, simulationData] = await Promise.all([
-        getUserPortfolios(user!.id),
-        getUserSkillPassports(user!.id),
-        getUserProgress(user!.id),
-        getUserSimulations(user!.id)
+        portfolioPromise,
+        passportPromise,
+        progressPromise,
+        simulationPromise
       ]);
 
       setPortfolios((portfolioData as any).data || []);
@@ -114,7 +135,7 @@ export default function PortfolioPage() {
       title: 'Assessment Master',
       description: 'Completed 3+ AI assessments',
       icon: 'Target',
-      earnedDate: simulations[simulations.length - 1]?.completed_at,
+      earnedDate: simulations[simulations.length - 1]?.created_at,
       rarity: 'Rare'
     });
   }
@@ -413,7 +434,7 @@ export default function PortfolioPage() {
                     <div className="flex-1">
                       <p className="font-medium">Completed {simulation.simulation_type} Assessment</p>
                       <p className="text-sm text-muted-foreground">
-                        Score: {simulation.score}% • {new Date(simulation.completed_at).toLocaleDateString()}
+                        Score: {simulation.score}% • {new Date(simulation.created_at).toLocaleDateString()}
                       </p>
                     </div>
                   </div>
