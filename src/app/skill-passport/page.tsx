@@ -10,8 +10,8 @@ import { useLocalStorage } from '@/hooks/useLocalStorage';
 import { motion } from 'framer-motion';
 import type { ThemeName } from '@/lib/themes';
 import { useAuth } from '@/lib/auth-context';
-import { createSkillPassport } from '@/lib/database-tools';
-import { pipilotAuthService } from '@/lib/pipilot-auth-service';
+import { createSkillPassport } from '@/lib/supabase-database-tools';
+import { supabaseAuthService } from '@/lib/supabase-auth-service';
 
 // Configure worker
 pdfjsLib.GlobalWorkerOptions.workerSrc =
@@ -139,18 +139,18 @@ export default function SkillPassportPage() {
       formData.append('text', output);
 
       // Get fresh token from auth service
-      const { accessToken } = pipilotAuthService.retrieveTokens();
+      const tokens = supabaseAuthService.retrieveTokens();
 
-      if (!accessToken) {
+      if (!tokens.accessToken) {
         throw new Error('No authentication token found. Please log in again.');
       }
 
-      console.log('Using access token:', accessToken.substring(0, 20) + '...');
+      console.log('Using access token:', tokens.accessToken.substring(0, 20) + '...');
 
       const response = await fetch('/api/generate-skill-passport', {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${accessToken}`,
+          'Authorization': `Bearer ${tokens.accessToken}`,
         },
         body: formData,
       });
@@ -161,7 +161,7 @@ export default function SkillPassportPage() {
 
         // If token is invalid, redirect to login
         if (response.status === 401) {
-          pipilotAuthService.clearTokens();
+          supabaseAuthService.clearTokens();
           window.location.href = '/auth/login';
           return;
         }

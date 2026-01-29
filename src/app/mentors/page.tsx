@@ -2,7 +2,7 @@
 
 import { useAuth } from '@/lib/auth-context';
 import { useEffect, useState } from 'react';
-import { getMentorFeedback, addMentorFeedback } from '@/lib/database-tools';
+import { getMentorFeedback, addMentorFeedback } from '@/lib/supabase-database-tools';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';

@@ -62,7 +62,6 @@
     "next-themes": "^0.4.6",
     "openai": "latest",
     "pdfjs-dist": "^3.11.174",
-    "pipilot-sdk": "^1.4.4",
     "react": "^18.2.0",
     "react-day-picker": "9.8.0",
     "react-dom": "^18.2.0",

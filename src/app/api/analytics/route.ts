@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { logAnalyticsEvent, createUserAnalyticsProfile, updateUserAnalyticsProfile, queryTable, TABLE_IDS } from '@/lib/database-tools';
+import { logAnalyticsEvent, createUserAnalyticsProfile, updateUserAnalyticsProfile, queryTable } from '@/lib/supabase-database-tools';
 
 export async function POST(request: NextRequest) {
   try {
@@ -94,7 +94,7 @@ export async function GET(request: NextRequest) {
       queryOptions.where.event_type = eventType;
     }
 
-    const response = await queryTable(TABLE_IDS.analytics, queryOptions);
+    const response = await queryTable('analytics', queryOptions);
 
     return NextResponse.json({
       success: true,

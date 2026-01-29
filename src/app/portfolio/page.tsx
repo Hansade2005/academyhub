@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useAuth } from '@/lib/auth-context';
-import { getUserPortfolios, getUserSkillPassports, getUserProgress, getUserSimulations } from '@/lib/database-tools';
+import { getUserPortfolios, getUserSkillPassports, getUserProgress, getUserSimulations } from '@/lib/supabase-database-tools';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';

@@ -11,7 +11,7 @@ import {
   getUserApplications,
   calculateConfidenceScore,
   getUserAchievements
-} from '@/lib/database-tools';
+} from '@/lib/supabase-database-tools';
 import Link from 'next/link';
 import {
   Award,
