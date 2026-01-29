@@ -8,7 +8,7 @@ import type { UserRole } from '@/lib/t3a-types';
 interface AuthContextType {
   user: SupabaseUser | null;
   login: (email: string, password: string) => Promise<void>;
-  signup: (email: string, password: string, full_name: string, avatar_url?: string) => Promise<void>;
+  signup: (email: string, password: string, full_name: string, avatar_url?: string) => Promise<SupabaseUser>;
   logout: () => Promise<void>;
   updateProfile: (updates: Partial<Pick<SupabaseUser, 'full_name' | 'avatar_url' | 'profile_completed'>>) => Promise<void>;
   refreshUser: () => Promise<void>;
@@ -106,11 +106,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
-  const signup = async (email: string, password: string, full_name: string, avatar_url?: string): Promise<void> => {
+  const signup = async (email: string, password: string, full_name: string, avatar_url?: string): Promise<SupabaseUser> => {
     setLoading(true);
     try {
       const response = await supabaseAuthService.signup(email, password, full_name, avatar_url);
       setUser(response.user);
+      return response.user;
     } catch (error) {
       console.error('Signup error:', error);
       throw error;

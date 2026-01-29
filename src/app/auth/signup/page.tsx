@@ -172,17 +172,17 @@ export default function SignupPage() {
     setError('');
 
     try {
-      // Create user account
-      await signup(formData.email, formData.password, formData.fullName);
+      // Create user account - signup returns the created user
+      const newUser = await signup(formData.email, formData.password, formData.fullName);
 
-      // Store analytics data
+      // Store analytics data using the returned user
       await fetch('/api/analytics/profile', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          userId: user!.id,
+          userId: newUser.id,
           analyticsData
         })
       });
@@ -194,7 +194,7 @@ export default function SignupPage() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          userId: user!.id,
+          userId: newUser.id,
           eventType: 'user_registration_complete',
           data: {
             ...analyticsData,
