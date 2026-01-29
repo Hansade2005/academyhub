@@ -35,4 +35,4 @@ test-*.html
 .gemini/
 gha-creds-*.json
 /lib/mcp
-/pipilotnpm/
+/pipilotnpm/node_modules/
