@@ -12,6 +12,7 @@ import type { ThemeName } from '@/lib/themes';
 import { useAuth } from '@/lib/auth-context';
 import { createSkillPassport } from '@/lib/supabase-database-tools';
 import { supabaseAuthService } from '@/lib/supabase-auth-service';
+import { toast } from 'sonner';
 
 // Configure worker
 pdfjsLib.GlobalWorkerOptions.workerSrc =
@@ -177,10 +178,10 @@ export default function SkillPassportPage() {
       if (data && user) {
         try {
           await createSkillPassport(user.id, `Skill Passport - ${new Date().toLocaleDateString()}`, data);
-          console.log('Skill passport saved to database');
-        } catch (dbError) {
+          toast.success('Skill passport generated and saved!');
+        } catch (dbError: any) {
           console.error('Failed to save to database:', dbError);
-          // Don't fail the whole process if DB save fails
+          toast.error(`Passport generated but failed to save: ${dbError.message || 'Unknown error'}`);
         }
       }
     } catch (err) {

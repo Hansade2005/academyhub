@@ -57,13 +57,13 @@ export const insertTableRecord = async (tableName: string, data: any) => {
     .from(tableName)
     .insert(data)
     .select()
-    .single()
 
   if (error) {
-    return formatSupabaseResponse({ error }, null)
+    console.error(`Insert into ${tableName} failed:`, error)
+    throw new Error(error.message || `Failed to insert into ${tableName}`)
   }
 
-  return formatSupabaseResponse({ error: null }, insertedData)
+  return formatSupabaseResponse({ error: null }, insertedData?.[0] || data)
 }
 
 export const updateTableRecord = async (tableName: string, recordId: string, data: any) => {
@@ -154,32 +154,38 @@ export const getUserSkillPassports = async (userId: string): Promise<{ data: Ski
  * Create a new skill passport
  */
 export const createSkillPassport = async (userId: string, title: string, content: any, confidenceScore?: number) => {
-  try {
-    // If confidence score not provided, calculate it
-    if (confidenceScore === undefined) {
-      confidenceScore = await calculateConfidenceScore(userId)
-    }
-
-    const { data, error } = await supabase
-      .from('skill_passports')
-      .insert({
-        user_id: userId,
-        title,
-        content,
-        confidence_score: confidenceScore
-      })
-      .select()
-      .single()
-
-    if (error) {
-      return formatSupabaseResponse({ error }, null)
-    }
-
-    return formatSupabaseResponse({ error: null }, data)
-  } catch (error) {
-    console.error('Error creating skill passport:', error)
-    return { data: null, success: false, message: 'Failed to create skill passport' }
+  // If confidence score not provided, calculate it
+  if (confidenceScore === undefined) {
+    confidenceScore = await calculateConfidenceScore(userId)
   }
+
+  const { data, error } = await supabase
+    .from('skill_passports')
+    .insert({
+      user_id: userId,
+      title,
+      content,
+      confidence_score: confidenceScore
+    })
+    .select()
+
+  if (error) {
+    console.error('Error creating skill passport:', error)
+    throw new Error(error.message || 'Failed to create skill passport')
+  }
+
+  // Log analytics event for skill passport creation
+  try {
+    await logAnalyticsEvent(userId, 'skill_passport_created', {
+      title,
+      confidence_score: confidenceScore,
+      created_at: new Date().toISOString()
+    })
+  } catch (analyticsError) {
+    console.error('Failed to log analytics:', analyticsError)
+  }
+
+  return formatSupabaseResponse({ error: null }, data?.[0] || null)
 }
 
 /**
@@ -208,53 +214,51 @@ export const getUserProgress = async (userId: string) => {
  * Add a progress entry
  */
 export const addProgressEntry = async (userId: string, skill: string, level: string, score: number) => {
-  try {
-    const { data, error } = await supabase
-      .from('progress_tracking')
-      .insert({
-        user_id: userId,
-        skill,
-        level,
-        score
-      })
-      .select()
-      .single()
+  const { data, error } = await supabase
+    .from('progress_tracking')
+    .insert({
+      user_id: userId,
+      skill,
+      level,
+      score
+    })
+    .select()
 
-    if (error) {
-      return formatSupabaseResponse({ error }, null)
-    }
-
-    return formatSupabaseResponse({ error: null }, data)
-  } catch (error) {
+  if (error) {
     console.error('Error adding progress entry:', error)
-    return { data: null, success: false, message: 'Failed to add progress entry' }
+    throw new Error(error.message || 'Failed to add progress entry')
   }
+
+  // Log analytics event
+  try {
+    await logAnalyticsEvent(userId, 'progress_tracked', { skill, level, score })
+  } catch (e) {
+    console.error('Failed to log analytics:', e)
+  }
+
+  return formatSupabaseResponse({ error: null }, data?.[0] || null)
 }
 
 /**
  * Log an analytics event
  */
-export const logAnalyticsEvent = async (userId: string | null, eventType: string, data: any) => {
-  try {
-    const { data: eventData, error } = await supabase
-      .from('analytics')
-      .insert({
-        user_id: userId,
-        event_type: eventType,
-        data
-      })
-      .select()
-      .single()
+export const logAnalyticsEvent = async (userId: string | null, eventType: string, eventData: any) => {
+  const { data, error } = await supabase
+    .from('analytics')
+    .insert({
+      user_id: userId,
+      event_type: eventType,
+      data: eventData
+    })
+    .select()
 
-    if (error) {
-      return formatSupabaseResponse({ error }, null)
-    }
-
-    return formatSupabaseResponse({ error: null }, eventData)
-  } catch (error) {
+  if (error) {
     console.error('Error logging analytics event:', error)
-    return { data: null, success: false, message: 'Failed to log analytics event' }
+    // Don't throw for analytics - it's not critical
+    return { data: null, success: false, message: error.message }
   }
+
+  return formatSupabaseResponse({ error: null }, data?.[0] || null)
 }
 
 /**
@@ -283,27 +287,33 @@ export const getUserSimulations = async (userId: string) => {
  * Create a simulation record
  */
 export const createSimulation = async (userId: string, simulationType: string, results: any, score: number) => {
-  try {
-    const { data, error } = await supabase
-      .from('simulations')
-      .insert({
-        user_id: userId,
-        simulation_type: simulationType,
-        results,
-        score
-      })
-      .select()
-      .single()
+  const { data, error } = await supabase
+    .from('simulations')
+    .insert({
+      user_id: userId,
+      simulation_type: simulationType,
+      results,
+      score
+    })
+    .select()
 
-    if (error) {
-      return formatSupabaseResponse({ error }, null)
-    }
-
-    return formatSupabaseResponse({ error: null }, data)
-  } catch (error) {
+  if (error) {
     console.error('Error creating simulation:', error)
-    return { data: null, success: false, message: 'Failed to create simulation' }
+    throw new Error(error.message || 'Failed to create simulation')
   }
+
+  // Log analytics event
+  try {
+    await logAnalyticsEvent(userId, 'simulation_completed', {
+      simulation_type: simulationType,
+      score,
+      completed_at: new Date().toISOString()
+    })
+  } catch (e) {
+    console.error('Failed to log analytics:', e)
+  }
+
+  return formatSupabaseResponse({ error: null }, data?.[0] || null)
 }
 
 /**
@@ -342,27 +352,29 @@ export const getJobPostings = async (filters?: any) => {
  * Create a job posting
  */
 export const createJobPosting = async (employerId: string, title: string, description: string, requirements: any) => {
-  try {
-    const { data, error } = await supabase
-      .from('job_postings')
-      .insert({
-        employer_id: employerId,
-        title,
-        description,
-        requirements
-      })
-      .select()
-      .single()
+  const { data, error } = await supabase
+    .from('job_postings')
+    .insert({
+      employer_id: employerId,
+      title,
+      description,
+      requirements
+    })
+    .select()
 
-    if (error) {
-      return formatSupabaseResponse({ error }, null)
-    }
-
-    return formatSupabaseResponse({ error: null }, data)
-  } catch (error) {
+  if (error) {
     console.error('Error creating job posting:', error)
-    return { data: null, success: false, message: 'Failed to create job posting' }
+    throw new Error(error.message || 'Failed to create job posting')
   }
+
+  // Log analytics event
+  try {
+    await logAnalyticsEvent(employerId, 'job_posted', { title })
+  } catch (e) {
+    console.error('Failed to log analytics:', e)
+  }
+
+  return formatSupabaseResponse({ error: null }, data?.[0] || null)
 }
 
 /**
@@ -418,26 +430,28 @@ export const getUserApplications = async (userId: string) => {
  * Apply to a job
  */
 export const applyToJob = async (userId: string, jobId: string, coverLetter?: string) => {
-  try {
-    const { data, error } = await supabase
-      .from('applications')
-      .insert({
-        user_id: userId,
-        job_id: jobId,
-        cover_letter: coverLetter
-      })
-      .select()
-      .single()
+  const { data, error } = await supabase
+    .from('applications')
+    .insert({
+      user_id: userId,
+      job_id: jobId,
+      cover_letter: coverLetter
+    })
+    .select()
 
-    if (error) {
-      return formatSupabaseResponse({ error }, null)
-    }
-
-    return formatSupabaseResponse({ error: null }, data)
-  } catch (error) {
+  if (error) {
     console.error('Error applying to job:', error)
-    return { data: null, success: false, message: 'Failed to apply to job' }
+    throw new Error(error.message || 'Failed to apply to job')
   }
+
+  // Log analytics event
+  try {
+    await logAnalyticsEvent(userId, 'job_application_submitted', { job_id: jobId })
+  } catch (e) {
+    console.error('Failed to log analytics:', e)
+  }
+
+  return formatSupabaseResponse({ error: null }, data?.[0] || null)
 }
 
 /**
@@ -466,27 +480,29 @@ export const getUserPortfolios = async (userId: string) => {
  * Create a portfolio
  */
 export const createPortfolio = async (userId: string, title: string, description: string, links?: any) => {
-  try {
-    const { data, error } = await supabase
-      .from('portfolios')
-      .insert({
-        user_id: userId,
-        title,
-        description,
-        links
-      })
-      .select()
-      .single()
+  const { data, error } = await supabase
+    .from('portfolios')
+    .insert({
+      user_id: userId,
+      title,
+      description,
+      links
+    })
+    .select()
 
-    if (error) {
-      return formatSupabaseResponse({ error }, null)
-    }
-
-    return formatSupabaseResponse({ error: null }, data)
-  } catch (error) {
+  if (error) {
     console.error('Error creating portfolio:', error)
-    return { data: null, success: false, message: 'Failed to create portfolio' }
+    throw new Error(error.message || 'Failed to create portfolio')
   }
+
+  // Log analytics event
+  try {
+    await logAnalyticsEvent(userId, 'portfolio_created', { title })
+  } catch (e) {
+    console.error('Failed to log analytics:', e)
+  }
+
+  return formatSupabaseResponse({ error: null }, data?.[0] || null)
 }
 
 /**
@@ -514,28 +530,30 @@ export const getUserCredentials = async (userId: string) => {
 /**
  * Issue a credential
  */
-export const issueCredential = async (userId: string, type: string, data: any, expiresAt?: string) => {
-  try {
-    const { data: credentialData, error } = await supabase
-      .from('credentials')
-      .insert({
-        user_id: userId,
-        type,
-        data,
-        expires_at: expiresAt
-      })
-      .select()
-      .single()
+export const issueCredential = async (userId: string, type: string, credentialData: any, expiresAt?: string) => {
+  const { data, error } = await supabase
+    .from('credentials')
+    .insert({
+      user_id: userId,
+      type,
+      data: credentialData,
+      expires_at: expiresAt
+    })
+    .select()
 
-    if (error) {
-      return formatSupabaseResponse({ error }, null)
-    }
-
-    return formatSupabaseResponse({ error: null }, credentialData)
-  } catch (error) {
+  if (error) {
     console.error('Error issuing credential:', error)
-    return { data: null, success: false, message: 'Failed to issue credential' }
+    throw new Error(error.message || 'Failed to issue credential')
   }
+
+  // Log analytics event
+  try {
+    await logAnalyticsEvent(userId, 'credential_issued', { type })
+  } catch (e) {
+    console.error('Failed to log analytics:', e)
+  }
+
+  return formatSupabaseResponse({ error: null }, data?.[0] || null)
 }
 
 /**
@@ -615,16 +633,23 @@ export const uploadFile = async (file: File, userId: string, isPublic: boolean =
         metadata
       })
       .select()
-      .single()
 
     if (recordError) {
-      return formatSupabaseResponse({ error: recordError }, null)
+      console.error('Error saving file record:', recordError)
+      throw new Error(recordError.message || 'Failed to save file record')
     }
 
-    return formatSupabaseResponse({ error: null }, fileRecord)
-  } catch (error) {
+    // Log analytics event
+    try {
+      await logAnalyticsEvent(userId, 'file_uploaded', { filename: file.name, file_type: file.type })
+    } catch (e) {
+      console.error('Failed to log analytics:', e)
+    }
+
+    return formatSupabaseResponse({ error: null }, fileRecord?.[0] || null)
+  } catch (error: any) {
     console.error('Error uploading file:', error)
-    return { data: null, success: false, message: 'Failed to upload file' }
+    throw new Error(error.message || 'Failed to upload file')
   }
 }
 
@@ -654,27 +679,29 @@ export const getUserProjects = async (userId: string) => {
  * Create a project
  */
 export const createProject = async (userId: string, title: string, description: string, contractValue?: number) => {
-  try {
-    const { data, error } = await supabase
-      .from('projects')
-      .insert({
-        user_id: userId,
-        title,
-        description,
-        contract_value: contractValue
-      })
-      .select()
-      .single()
+  const { data, error } = await supabase
+    .from('projects')
+    .insert({
+      user_id: userId,
+      title,
+      description,
+      contract_value: contractValue
+    })
+    .select()
 
-    if (error) {
-      return formatSupabaseResponse({ error }, null)
-    }
-
-    return formatSupabaseResponse({ error: null }, data)
-  } catch (error) {
+  if (error) {
     console.error('Error creating project:', error)
-    return { data: null, success: false, message: 'Failed to create project' }
+    throw new Error(error.message || 'Failed to create project')
   }
+
+  // Log analytics event
+  try {
+    await logAnalyticsEvent(userId, 'project_created', { title, contract_value: contractValue })
+  } catch (e) {
+    console.error('Failed to log analytics:', e)
+  }
+
+  return formatSupabaseResponse({ error: null }, data?.[0] || null)
 }
 
 // Confidence Score™ calculation functions
@@ -804,57 +831,61 @@ export const getMentorFeedback = async (userId: string) => {
  * Add mentor feedback
  */
 export const addMentorFeedback = async (userId: string, mentorId: string, feedback: string, rating: number) => {
-  try {
-    const { data, error } = await supabase
-      .from('mentor_feedback')
-      .insert({
-        user_id: userId,
-        mentor_id: mentorId,
-        feedback,
-        rating
-      })
-      .select()
-      .single()
+  const { data, error } = await supabase
+    .from('mentor_feedback')
+    .insert({
+      user_id: userId,
+      mentor_id: mentorId,
+      feedback,
+      rating
+    })
+    .select()
 
-    if (error) {
-      return formatSupabaseResponse({ error }, null)
-    }
-
-    return formatSupabaseResponse({ error: null }, data)
-  } catch (error) {
+  if (error) {
     console.error('Error adding mentor feedback:', error)
-    return { data: null, success: false, message: 'Failed to add mentor feedback' }
+    throw new Error(error.message || 'Failed to add mentor feedback')
   }
+
+  // Log analytics event
+  try {
+    await logAnalyticsEvent(userId, 'mentor_feedback_received', { mentor_id: mentorId, rating })
+  } catch (e) {
+    console.error('Failed to log analytics:', e)
+  }
+
+  return formatSupabaseResponse({ error: null }, data?.[0] || null)
 }
 
 /**
  * Create user analytics profile
  */
 export const createUserAnalyticsProfile = async (userId: string, analyticsData: any) => {
-  try {
-    const { data, error } = await supabase
-      .from('user_analytics_profiles')
-      .insert({
-        user_id: userId,
-        demographics: analyticsData.demographics,
-        professional_background: analyticsData.professionalBackground,
-        career_goals: analyticsData.careerGoals,
-        learning_preferences: analyticsData.learningPreferences,
-        discovery_source: analyticsData.discoverySource,
-        marketing_consent: analyticsData.marketingConsent
-      })
-      .select()
-      .single()
+  const { data, error } = await supabase
+    .from('user_analytics_profiles')
+    .insert({
+      user_id: userId,
+      demographics: analyticsData.demographics,
+      professional_background: analyticsData.professionalBackground,
+      career_goals: analyticsData.careerGoals,
+      learning_preferences: analyticsData.learningPreferences,
+      discovery_source: analyticsData.discoverySource,
+      marketing_consent: analyticsData.marketingConsent
+    })
+    .select()
 
-    if (error) {
-      return formatSupabaseResponse({ error }, null)
-    }
-
-    return formatSupabaseResponse({ error: null }, data)
-  } catch (error) {
+  if (error) {
     console.error('Error creating user analytics profile:', error)
-    return { data: null, success: false, message: 'Failed to create analytics profile' }
+    throw new Error(error.message || 'Failed to create analytics profile')
   }
+
+  // Log analytics event
+  try {
+    await logAnalyticsEvent(userId, 'analytics_profile_created', { discovery_source: analyticsData.discoverySource })
+  } catch (e) {
+    console.error('Failed to log analytics:', e)
+  }
+
+  return formatSupabaseResponse({ error: null }, data?.[0] || null)
 }
 
 /**
