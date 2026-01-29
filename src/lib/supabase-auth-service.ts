@@ -55,31 +55,41 @@ class SupabaseAuthService {
       throw new Error('Failed to create account')
     }
 
-    // Create/update the user profile in our users table
+    // Wait a moment for the session to be established
+    await new Promise(resolve => setTimeout(resolve, 500))
+
+    // Create the user profile in our users table
+    const profileData = {
+      id: authData.user.id,
+      email: email.toLowerCase(),
+      full_name,
+      avatar_url: avatar_url || null,
+      role: 'candidate' as UserRole,
+      is_verified: !!authData.user.email_confirmed_at,
+      profile_completed: false,
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString()
+    }
+
     const { data: userProfile, error: profileError } = await supabase
       .from('users')
-      .upsert({
-        id: authData.user.id,
-        email: email.toLowerCase(),
-        full_name,
-        avatar_url,
-        role: 'candidate' as UserRole,
-        is_verified: !!authData.user.email_confirmed_at,
-        profile_completed: false,
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString()
-      }, {
-        onConflict: 'id'
-      })
+      .upsert(profileData, { onConflict: 'id' })
       .select('id, email, full_name, avatar_url, role, is_verified, profile_completed, created_at, updated_at')
-      .single()
 
     if (profileError) {
       console.error('Profile creation error:', profileError)
-      // Don't fail signup if profile creation fails - auth was successful
+      // Try one more time with just insert
+      const { error: retryError } = await supabase
+        .from('users')
+        .insert(profileData)
+
+      if (retryError) {
+        console.error('Profile creation retry failed:', retryError)
+        // Still return success since auth user was created - profile can be created on next login
+      }
     }
 
-    const user: SupabaseUser = userProfile || {
+    const user: SupabaseUser = userProfile?.[0] || {
       id: authData.user.id,
       email: authData.user.email!,
       full_name,

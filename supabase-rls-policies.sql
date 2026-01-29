@@ -4,6 +4,46 @@
 -- =====================================================
 
 -- =====================================================
+-- AUTOMATIC USER PROFILE CREATION TRIGGER
+-- This creates a profile in the users table when a new
+-- auth user signs up. This is more reliable than client-side
+-- inserts because triggers run with elevated privileges.
+-- =====================================================
+
+-- Create the function that will be called by the trigger
+CREATE OR REPLACE FUNCTION public.handle_new_user()
+RETURNS trigger AS $$
+BEGIN
+  INSERT INTO public.users (id, email, full_name, avatar_url, role, is_verified, profile_completed, created_at, updated_at)
+  VALUES (
+    NEW.id,
+    NEW.email,
+    COALESCE(NEW.raw_user_meta_data->>'full_name', ''),
+    NEW.raw_user_meta_data->>'avatar_url',
+    'candidate',
+    COALESCE(NEW.email_confirmed_at IS NOT NULL, false),
+    false,
+    NOW(),
+    NOW()
+  )
+  ON CONFLICT (id) DO UPDATE SET
+    email = EXCLUDED.email,
+    full_name = COALESCE(EXCLUDED.full_name, users.full_name),
+    avatar_url = COALESCE(EXCLUDED.avatar_url, users.avatar_url),
+    updated_at = NOW();
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- Drop the trigger if it exists
+DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
+
+-- Create the trigger
+CREATE TRIGGER on_auth_user_created
+  AFTER INSERT ON auth.users
+  FOR EACH ROW EXECUTE FUNCTION public.handle_new_user();
+
+-- =====================================================
 -- 1. USERS TABLE
 -- =====================================================
 ALTER TABLE users ENABLE ROW LEVEL SECURITY;
