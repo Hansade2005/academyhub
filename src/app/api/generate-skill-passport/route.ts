@@ -1,9 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
-
-const API_BASE = 'https://pipilot.dev/api/v1/databases';
-const DATABASE_ID = process.env.NEXT_PUBLIC_PIPILOT_DATABASE_ID || '41';
-const API_KEY = process.env.PIPILOT_API_KEY || 'sk_live_db3a12d669e420721b56a98ba13924d5815f6e349bbeb44b1725acd252dae5a2';
+import { supabase } from '@/lib/supabase-client';
 
 const SkillPassportSchema = z.object({
   name: z.string(),
@@ -281,23 +278,11 @@ export async function POST(req: NextRequest) {
 
     const token = authHeader.substring(7); // Remove 'Bearer ' prefix
 
-    // Verify token with PiPilot
-    const verifyResponse = await fetch(`${API_BASE}/${DATABASE_ID}/auth/verify`, {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${API_KEY}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ token }),
-    });
+    // Verify token with Supabase Auth
+    const { data: { user }, error: authError } = await supabase.auth.getUser(token);
 
-    if (!verifyResponse.ok) {
+    if (authError || !user) {
       return NextResponse.json({ error: 'Invalid authentication token.' }, { status: 401 });
-    }
-
-    const verifyData = await verifyResponse.json();
-    if (!verifyData.valid) {
-      return NextResponse.json({ error: 'Authentication token is not valid.' }, { status: 401 });
     }
 
     const formData = await req.formData();

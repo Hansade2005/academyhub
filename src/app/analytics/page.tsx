@@ -3,7 +3,8 @@
 import { useAuth } from '@/lib/auth-context';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useEffect, useState } from 'react';
-import { getUserProgress, getUserSimulations, getUserSkillPassports, ProgressEntry, Simulation, calculateConfidenceScore } from '@/lib/database-tools';
+import { getUserProgress, getUserSimulations, getUserSkillPassports, calculateConfidenceScore } from '@/lib/supabase-database-tools';
+import type { ProgressEntry, Simulation } from '@/lib/supabase-client';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';

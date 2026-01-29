@@ -10,8 +10,8 @@ import { useLocalStorage } from '@/hooks/useLocalStorage';
 import { motion } from 'framer-motion';
 import type { ThemeName } from '@/lib/themes';
 import { useAuth } from '@/lib/auth-context';
-import { createSkillPassport } from '@/lib/database-tools';
-import { pipilotAuthService } from '@/lib/pipilot-auth-service';
+import { createSkillPassport } from '@/lib/supabase-database-tools';
+import { supabaseAuthService } from '@/lib/supabase-auth-service';
 
 // Configure worker
 pdfjsLib.GlobalWorkerOptions.workerSrc =
@@ -138,8 +138,8 @@ export default function SkillPassportPage() {
       const formData = new FormData();
       formData.append('text', output);
 
-      // Get fresh token from auth service
-      const { accessToken } = pipilotAuthService.retrieveTokens();
+      // Get fresh token from Supabase Auth
+      const accessToken = await supabaseAuthService.getAccessToken();
 
       if (!accessToken) {
         throw new Error('No authentication token found. Please log in again.');
@@ -161,7 +161,7 @@ export default function SkillPassportPage() {
 
         // If token is invalid, redirect to login
         if (response.status === 401) {
-          pipilotAuthService.clearTokens();
+          await supabaseAuthService.logout();
           window.location.href = '/auth/login';
           return;
         }

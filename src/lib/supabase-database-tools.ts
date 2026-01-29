@@ -562,25 +562,45 @@ export const getUserFiles = async (userId: string) => {
 
 /**
  * Upload a file
+ * Uses the 'files' bucket in Supabase Storage
  */
 export const uploadFile = async (file: File, userId: string, isPublic: boolean = true, metadata?: any) => {
   try {
-    // Upload file to Supabase Storage
-    const filePath = `${userId}/${Date.now()}_${file.name}`
+    // Sanitize filename and generate unique path
+    const timestamp = Date.now()
+    const sanitizedFilename = file.name.replace(/[^a-zA-Z0-9.-]/g, '_')
+    const filePath = `${userId}/${timestamp}_${sanitizedFilename}`
+
+    // Upload file to Supabase Storage 'files' bucket
     const { data: uploadData, error: uploadError } = await supabase
       .storage
-      .from('user-uploads')
-      .upload(filePath, file, { upsert: false, contentType: file.type })
+      .from('files')
+      .upload(filePath, file, {
+        upsert: false,
+        contentType: file.type,
+        cacheControl: '3600'
+      })
 
     if (uploadError) {
       return formatSupabaseResponse({ error: uploadError }, null)
     }
 
-    // Get public URL
-    const { data: urlData } = supabase
-      .storage
-      .from('user-uploads')
-      .getPublicUrl(filePath)
+    // Get public URL or signed URL based on isPublic flag
+    let fileUrl: string
+    if (isPublic) {
+      const { data: urlData } = supabase
+        .storage
+        .from('files')
+        .getPublicUrl(filePath)
+      fileUrl = urlData.publicUrl
+    } else {
+      // Generate signed URL for private files (1 hour validity)
+      const { data: signedData, error: signedError } = await supabase
+        .storage
+        .from('files')
+        .createSignedUrl(filePath, 3600)
+      fileUrl = signedData?.signedUrl || ''
+    }
 
     // Save file record to database
     const { data: fileRecord, error: recordError } = await supabase
@@ -588,7 +608,8 @@ export const uploadFile = async (file: File, userId: string, isPublic: boolean =
       .insert({
         user_id: userId,
         filename: file.name,
-        file_url: urlData.publicUrl,
+        file_url: fileUrl,
+        file_path: filePath,
         file_type: file.type,
         file_size: file.size,
         metadata

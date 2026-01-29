@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createUserAnalyticsProfile, getUserAnalyticsProfile, updateUserAnalyticsProfile } from '@/lib/database-tools';
+import { createUserAnalyticsProfile, getUserAnalyticsProfile, updateUserAnalyticsProfile } from '@/lib/supabase-database-tools';
 
 export async function POST(request: NextRequest) {
   try {

@@ -2,7 +2,8 @@
 
 import { useAuth } from '@/lib/auth-context';
 import { useEffect, useState } from 'react';
-import { getUserSkillPassports, SkillPassport } from '@/lib/database-tools';
+import { getUserSkillPassports } from '@/lib/supabase-database-tools';
+import type { SkillPassport } from '@/lib/supabase-client';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
