@@ -138,19 +138,19 @@ export default function SkillPassportPage() {
       const formData = new FormData();
       formData.append('text', output);
 
-      // Get fresh token from auth service
-      const tokens = supabaseAuthService.retrieveTokens();
+      // Get fresh token from Supabase Auth
+      const accessToken = await supabaseAuthService.getAccessToken();
 
-      if (!tokens.accessToken) {
+      if (!accessToken) {
         throw new Error('No authentication token found. Please log in again.');
       }
 
-      console.log('Using access token:', tokens.accessToken.substring(0, 20) + '...');
+      console.log('Using access token:', accessToken.substring(0, 20) + '...');
 
       const response = await fetch('/api/generate-skill-passport', {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${tokens.accessToken}`,
+          'Authorization': `Bearer ${accessToken}`,
         },
         body: formData,
       });
@@ -161,7 +161,7 @@ export default function SkillPassportPage() {
 
         // If token is invalid, redirect to login
         if (response.status === 401) {
-          supabaseAuthService.clearTokens();
+          await supabaseAuthService.logout();
           window.location.href = '/auth/login';
           return;
         }

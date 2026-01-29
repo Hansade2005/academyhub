@@ -278,21 +278,11 @@ export async function POST(req: NextRequest) {
 
     const token = authHeader.substring(7); // Remove 'Bearer ' prefix
 
-    // Verify token with Supabase - check if it's a valid session token
-    // First try to find the session in user_sessions table
-    const { data: sessionData, error: sessionError } = await supabase
-      .from('user_sessions')
-      .select('user_id, expires_at')
-      .eq('token', token)
-      .single();
+    // Verify token with Supabase Auth
+    const { data: { user }, error: authError } = await supabase.auth.getUser(token);
 
-    if (sessionError || !sessionData) {
+    if (authError || !user) {
       return NextResponse.json({ error: 'Invalid authentication token.' }, { status: 401 });
-    }
-
-    // Check if session is expired
-    if (new Date(sessionData.expires_at) < new Date()) {
-      return NextResponse.json({ error: 'Authentication token has expired.' }, { status: 401 });
     }
 
     const formData = await req.formData();

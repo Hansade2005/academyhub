@@ -1,10 +1,11 @@
 // Supabase Authentication Service
-// Replaces PiPilot authentication with Supabase-based custom auth
+// Uses Supabase's built-in email/password authentication
 
 import { supabase } from './supabase-client'
+import type { User, Session } from '@supabase/supabase-js'
 import type { UserRole } from './t3a-types'
 
-// User interface matching our users table
+// Extended user interface with profile data from our users table
 export interface SupabaseUser {
   id: string
   email: string
@@ -17,72 +18,15 @@ export interface SupabaseUser {
   updated_at: string
 }
 
-export interface AuthTokens {
-  access_token: string
-  refresh_token: string
-  expires_in: number
-  token_type: string
-}
-
 export interface AuthResponse {
   message: string
   user: SupabaseUser
-  tokens: AuthTokens
-}
-
-// Simple JWT-like token generation (for client-side session management)
-// In production, you'd want to use proper JWT with jose or jsonwebtoken
-const generateToken = (userId: string, email: string): string => {
-  const payload = {
-    userId,
-    email,
-    iat: Date.now(),
-    exp: Date.now() + (24 * 60 * 60 * 1000) // 24 hours
-  }
-  // Base64 encode the payload (simple token for client-side use)
-  return btoa(JSON.stringify(payload))
-}
-
-const generateRefreshToken = (userId: string): string => {
-  const payload = {
-    userId,
-    type: 'refresh',
-    iat: Date.now(),
-    exp: Date.now() + (7 * 24 * 60 * 60 * 1000) // 7 days
-  }
-  return btoa(JSON.stringify(payload))
-}
-
-const decodeToken = (token: string): any => {
-  try {
-    return JSON.parse(atob(token))
-  } catch {
-    return null
-  }
-}
-
-// Simple password hashing using Web Crypto API (browser-compatible)
-// For production, use bcrypt on the server side
-const hashPassword = async (password: string): Promise<string> => {
-  const encoder = new TextEncoder()
-  const data = encoder.encode(password + process.env.NEXT_PUBLIC_AUTH_SALT || 'T3A_SECURE_SALT_2024')
-  const hashBuffer = await crypto.subtle.digest('SHA-256', data)
-  const hashArray = Array.from(new Uint8Array(hashBuffer))
-  return hashArray.map(b => b.toString(16).padStart(2, '0')).join('')
-}
-
-const verifyPassword = async (password: string, hash: string): Promise<boolean> => {
-  const computedHash = await hashPassword(password)
-  return computedHash === hash
+  session: Session | null
 }
 
 class SupabaseAuthService {
-  private tokenKey = 't3a_access_token'
-  private refreshTokenKey = 't3a_refresh_token'
-  private userKey = 't3a_user'
-
   /**
-   * Sign up a new user
+   * Sign up a new user with email and password
    */
   async signup(
     email: string,
@@ -90,152 +34,135 @@ class SupabaseAuthService {
     full_name: string,
     avatar_url?: string
   ): Promise<AuthResponse> {
-    // Check if email already exists
-    const { data: existingUser } = await supabase
-      .from('users')
-      .select('id')
-      .eq('email', email.toLowerCase())
-      .single()
+    // Sign up with Supabase Auth
+    const { data: authData, error: authError } = await supabase.auth.signUp({
+      email: email.toLowerCase(),
+      password,
+      options: {
+        data: {
+          full_name,
+          avatar_url
+        }
+      }
+    })
 
-    if (existingUser) {
-      throw new Error('An account with this email already exists')
+    if (authError) {
+      console.error('Supabase Auth signup error:', authError)
+      throw new Error(authError.message || 'Failed to create account')
     }
 
-    // Hash the password
-    const password_hash = await hashPassword(password)
+    if (!authData.user) {
+      throw new Error('Failed to create account')
+    }
 
-    // Create the user
-    const { data: newUser, error } = await supabase
+    // Create/update the user profile in our users table
+    const { data: userProfile, error: profileError } = await supabase
       .from('users')
-      .insert({
+      .upsert({
+        id: authData.user.id,
         email: email.toLowerCase(),
-        password_hash,
         full_name,
         avatar_url,
         role: 'candidate' as UserRole,
-        is_verified: false,
-        profile_completed: false
+        is_verified: !!authData.user.email_confirmed_at,
+        profile_completed: false,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
+      }, {
+        onConflict: 'id'
       })
       .select('id, email, full_name, avatar_url, role, is_verified, profile_completed, created_at, updated_at')
       .single()
 
-    if (error) {
-      console.error('Signup error:', error)
-      throw new Error(error.message || 'Failed to create account')
+    if (profileError) {
+      console.error('Profile creation error:', profileError)
+      // Don't fail signup if profile creation fails - auth was successful
     }
 
-    // Generate tokens
-    const tokens = this.generateTokens(newUser.id, newUser.email)
-    this.storeTokens(tokens)
-    this.storeUser(newUser)
+    const user: SupabaseUser = userProfile || {
+      id: authData.user.id,
+      email: authData.user.email!,
+      full_name,
+      avatar_url,
+      role: 'candidate' as UserRole,
+      is_verified: !!authData.user.email_confirmed_at,
+      profile_completed: false,
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString()
+    }
 
     return {
       message: 'Account created successfully',
-      user: newUser as SupabaseUser,
-      tokens
+      user,
+      session: authData.session
     }
   }
 
   /**
-   * Log in an existing user
+   * Log in an existing user with email and password
    */
   async login(email: string, password: string): Promise<AuthResponse> {
-    // Find the user
-    const { data: user, error } = await supabase
+    const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
+      email: email.toLowerCase(),
+      password
+    })
+
+    if (authError) {
+      console.error('Supabase Auth login error:', authError)
+      throw new Error(authError.message || 'Invalid email or password')
+    }
+
+    if (!authData.user || !authData.session) {
+      throw new Error('Login failed')
+    }
+
+    // Get user profile from our users table
+    const { data: userProfile, error: profileError } = await supabase
       .from('users')
-      .select('id, email, password_hash, full_name, avatar_url, role, is_verified, profile_completed, created_at, updated_at')
-      .eq('email', email.toLowerCase())
+      .select('id, email, full_name, avatar_url, role, is_verified, profile_completed, created_at, updated_at')
+      .eq('id', authData.user.id)
       .single()
 
-    if (error || !user) {
-      throw new Error('Invalid email or password')
+    // If profile doesn't exist, create it
+    let user: SupabaseUser
+    if (profileError || !userProfile) {
+      const { data: newProfile } = await supabase
+        .from('users')
+        .upsert({
+          id: authData.user.id,
+          email: authData.user.email!,
+          full_name: authData.user.user_metadata?.full_name || '',
+          avatar_url: authData.user.user_metadata?.avatar_url,
+          role: 'candidate' as UserRole,
+          is_verified: !!authData.user.email_confirmed_at,
+          profile_completed: false,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
+        }, {
+          onConflict: 'id'
+        })
+        .select('id, email, full_name, avatar_url, role, is_verified, profile_completed, created_at, updated_at')
+        .single()
+
+      user = newProfile || {
+        id: authData.user.id,
+        email: authData.user.email!,
+        full_name: authData.user.user_metadata?.full_name || '',
+        avatar_url: authData.user.user_metadata?.avatar_url,
+        role: 'candidate' as UserRole,
+        is_verified: !!authData.user.email_confirmed_at,
+        profile_completed: false,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
+      }
+    } else {
+      user = userProfile as SupabaseUser
     }
-
-    // Verify password
-    const isValid = await verifyPassword(password, user.password_hash)
-    if (!isValid) {
-      throw new Error('Invalid email or password')
-    }
-
-    // Generate tokens
-    const tokens = this.generateTokens(user.id, user.email)
-    this.storeTokens(tokens)
-
-    // Remove password_hash from user object before returning
-    const { password_hash, ...safeUser } = user
-    this.storeUser(safeUser as SupabaseUser)
 
     return {
       message: 'Login successful',
-      user: safeUser as SupabaseUser,
-      tokens
-    }
-  }
-
-  /**
-   * Verify an access token
-   */
-  async verifyToken(token: string): Promise<{ valid: boolean; user: SupabaseUser | null }> {
-    const payload = decodeToken(token)
-
-    if (!payload || !payload.userId || !payload.exp) {
-      return { valid: false, user: null }
-    }
-
-    // Check if token is expired
-    if (Date.now() > payload.exp) {
-      return { valid: false, user: null }
-    }
-
-    // Fetch fresh user data
-    const { data: user, error } = await supabase
-      .from('users')
-      .select('id, email, full_name, avatar_url, role, is_verified, profile_completed, created_at, updated_at')
-      .eq('id', payload.userId)
-      .single()
-
-    if (error || !user) {
-      return { valid: false, user: null }
-    }
-
-    return { valid: true, user: user as SupabaseUser }
-  }
-
-  /**
-   * Refresh the access token
-   */
-  async refreshToken(refreshToken: string): Promise<AuthResponse> {
-    const payload = decodeToken(refreshToken)
-
-    if (!payload || !payload.userId || payload.type !== 'refresh') {
-      throw new Error('Invalid refresh token')
-    }
-
-    // Check if refresh token is expired
-    if (Date.now() > payload.exp) {
-      throw new Error('Refresh token expired')
-    }
-
-    // Fetch user data
-    const { data: user, error } = await supabase
-      .from('users')
-      .select('id, email, full_name, avatar_url, role, is_verified, profile_completed, created_at, updated_at')
-      .eq('id', payload.userId)
-      .single()
-
-    if (error || !user) {
-      throw new Error('User not found')
-    }
-
-    // Generate new tokens
-    const tokens = this.generateTokens(user.id, user.email)
-    this.storeTokens(tokens)
-    this.storeUser(user as SupabaseUser)
-
-    return {
-      message: 'Token refreshed successfully',
-      user: user as SupabaseUser,
-      tokens
+      user,
+      session: authData.session
     }
   }
 
@@ -243,42 +170,79 @@ class SupabaseAuthService {
    * Log out the current user
    */
   async logout(): Promise<void> {
-    this.clearTokens()
-    this.clearUser()
+    const { error } = await supabase.auth.signOut()
+    if (error) {
+      console.error('Logout error:', error)
+      // Don't throw - we want to clear local state even if server logout fails
+    }
   }
 
   /**
    * Get the currently authenticated user
    */
   async getAuthenticatedUser(): Promise<SupabaseUser | null> {
-    const { accessToken } = this.retrieveTokens()
+    const { data: { session }, error: sessionError } = await supabase.auth.getSession()
 
-    if (!accessToken) {
+    if (sessionError || !session) {
+      return null
+    }
+
+    // Get user profile from our users table
+    const { data: userProfile, error: profileError } = await supabase
+      .from('users')
+      .select('id, email, full_name, avatar_url, role, is_verified, profile_completed, created_at, updated_at')
+      .eq('id', session.user.id)
+      .single()
+
+    if (profileError || !userProfile) {
+      // Return basic user info from Supabase Auth if profile not found
+      return {
+        id: session.user.id,
+        email: session.user.email!,
+        full_name: session.user.user_metadata?.full_name || '',
+        avatar_url: session.user.user_metadata?.avatar_url,
+        role: 'candidate' as UserRole,
+        is_verified: !!session.user.email_confirmed_at,
+        profile_completed: false,
+        created_at: session.user.created_at,
+        updated_at: session.user.updated_at || session.user.created_at
+      }
+    }
+
+    return userProfile as SupabaseUser
+  }
+
+  /**
+   * Get cached user from Supabase Auth (faster than full profile fetch)
+   */
+  getCachedUser(): SupabaseUser | null {
+    // Supabase handles caching internally, but we can provide a sync version
+    // by checking localStorage for the auth state
+    if (typeof window === 'undefined') {
       return null
     }
 
     try {
-      const result = await this.verifyToken(accessToken)
-      if (result.valid && result.user) {
-        return result.user
-      }
+      const storageKey = `sb-${process.env.NEXT_PUBLIC_SUPABASE_URL?.split('//')[1]?.split('.')[0]}-auth-token`
+      const storedSession = localStorage.getItem(storageKey)
+      if (!storedSession) return null
 
-      // Try to refresh the token
-      const { refreshToken } = this.retrieveTokens()
-      if (refreshToken) {
-        try {
-          const refreshedData = await this.refreshToken(refreshToken)
-          return refreshedData.user
-        } catch (refreshError) {
-          console.error('Token refresh failed:', refreshError)
-          this.clearTokens()
-          this.clearUser()
-          return null
-        }
+      const parsed = JSON.parse(storedSession)
+      const user = parsed?.user
+      if (!user) return null
+
+      return {
+        id: user.id,
+        email: user.email,
+        full_name: user.user_metadata?.full_name || '',
+        avatar_url: user.user_metadata?.avatar_url,
+        role: 'candidate' as UserRole,
+        is_verified: !!user.email_confirmed_at,
+        profile_completed: false,
+        created_at: user.created_at,
+        updated_at: user.updated_at || user.created_at
       }
-      return null
-    } catch (error) {
-      console.error('Error getting authenticated user:', error)
+    } catch {
       return null
     }
   }
@@ -286,7 +250,23 @@ class SupabaseAuthService {
   /**
    * Update user profile
    */
-  async updateProfile(userId: string, updates: Partial<Pick<SupabaseUser, 'full_name' | 'avatar_url' | 'profile_completed'>>): Promise<SupabaseUser> {
+  async updateProfile(
+    userId: string,
+    updates: Partial<Pick<SupabaseUser, 'full_name' | 'avatar_url' | 'profile_completed'>>
+  ): Promise<SupabaseUser> {
+    // Update Supabase Auth user metadata
+    const { error: authError } = await supabase.auth.updateUser({
+      data: {
+        full_name: updates.full_name,
+        avatar_url: updates.avatar_url
+      }
+    })
+
+    if (authError) {
+      console.error('Auth metadata update error:', authError)
+    }
+
+    // Update our users table
     const { data: user, error } = await supabase
       .from('users')
       .update({
@@ -301,136 +281,147 @@ class SupabaseAuthService {
       throw new Error(error.message || 'Failed to update profile')
     }
 
-    this.storeUser(user as SupabaseUser)
     return user as SupabaseUser
   }
 
   /**
-   * Change password
+   * Change password for authenticated user
    */
-  async changePassword(userId: string, currentPassword: string, newPassword: string): Promise<void> {
-    // Get current user with password hash
-    const { data: user, error: fetchError } = await supabase
-      .from('users')
-      .select('password_hash')
-      .eq('id', userId)
-      .single()
+  async changePassword(newPassword: string): Promise<void> {
+    const { error } = await supabase.auth.updateUser({
+      password: newPassword
+    })
 
-    if (fetchError || !user) {
-      throw new Error('User not found')
-    }
-
-    // Verify current password
-    const isValid = await verifyPassword(currentPassword, user.password_hash)
-    if (!isValid) {
-      throw new Error('Current password is incorrect')
-    }
-
-    // Hash new password
-    const password_hash = await hashPassword(newPassword)
-
-    // Update password
-    const { error: updateError } = await supabase
-      .from('users')
-      .update({
-        password_hash,
-        updated_at: new Date().toISOString()
-      })
-      .eq('id', userId)
-
-    if (updateError) {
-      throw new Error('Failed to update password')
+    if (error) {
+      throw new Error(error.message || 'Failed to update password')
     }
   }
 
-  // Token management helpers
-  private generateTokens(userId: string, email: string): AuthTokens {
-    return {
-      access_token: generateToken(userId, email),
-      refresh_token: generateRefreshToken(userId),
-      expires_in: 24 * 60 * 60, // 24 hours in seconds
-      token_type: 'Bearer'
+  /**
+   * Send password reset email
+   */
+  async sendPasswordResetEmail(email: string): Promise<void> {
+    const { error } = await supabase.auth.resetPasswordForEmail(email.toLowerCase(), {
+      redirectTo: `${window.location.origin}/auth/reset-password`
+    })
+
+    if (error) {
+      throw new Error(error.message || 'Failed to send password reset email')
     }
   }
 
-  private storeTokens(tokens: AuthTokens): void {
-    if (typeof window !== 'undefined') {
-      localStorage.setItem(this.tokenKey, tokens.access_token)
-      localStorage.setItem(this.refreshTokenKey, tokens.refresh_token)
-    }
+  /**
+   * Get the current session
+   */
+  async getSession(): Promise<Session | null> {
+    const { data: { session } } = await supabase.auth.getSession()
+    return session
   }
 
+  /**
+   * Get the current access token (for API calls)
+   */
+  async getAccessToken(): Promise<string | null> {
+    const { data: { session } } = await supabase.auth.getSession()
+    return session?.access_token || null
+  }
+
+  /**
+   * Retrieve tokens for API authentication
+   * Returns the current session tokens from Supabase Auth
+   */
   retrieveTokens(): { accessToken: string | null; refreshToken: string | null } {
     if (typeof window === 'undefined') {
       return { accessToken: null, refreshToken: null }
     }
-    const accessToken = localStorage.getItem(this.tokenKey)
-    const refreshToken = localStorage.getItem(this.refreshTokenKey)
-    return { accessToken, refreshToken }
-  }
 
-  clearTokens(): void {
-    if (typeof window !== 'undefined') {
-      localStorage.removeItem(this.tokenKey)
-      localStorage.removeItem(this.refreshTokenKey)
-    }
-  }
-
-  private storeUser(user: SupabaseUser): void {
-    if (typeof window !== 'undefined') {
-      localStorage.setItem(this.userKey, JSON.stringify(user))
-    }
-  }
-
-  private clearUser(): void {
-    if (typeof window !== 'undefined') {
-      localStorage.removeItem(this.userKey)
-    }
-  }
-
-  /**
-   * Get cached user from localStorage (faster than API call)
-   */
-  getCachedUser(): SupabaseUser | null {
-    if (typeof window === 'undefined') {
-      return null
-    }
-    const userJson = localStorage.getItem(this.userKey)
-    if (!userJson) {
-      return null
-    }
     try {
-      return JSON.parse(userJson)
+      const storageKey = `sb-${process.env.NEXT_PUBLIC_SUPABASE_URL?.split('//')[1]?.split('.')[0]}-auth-token`
+      const storedSession = localStorage.getItem(storageKey)
+      if (!storedSession) return { accessToken: null, refreshToken: null }
+
+      const parsed = JSON.parse(storedSession)
+      return {
+        accessToken: parsed?.access_token || null,
+        refreshToken: parsed?.refresh_token || null
+      }
     } catch {
-      return null
+      return { accessToken: null, refreshToken: null }
     }
   }
 
   /**
-   * Check if user is authenticated (quick check without API call)
+   * Clear auth tokens (for logout scenarios)
+   */
+  clearTokens(): void {
+    // Supabase handles this internally via signOut
+    // This method exists for compatibility
+    if (typeof window !== 'undefined') {
+      try {
+        const storageKey = `sb-${process.env.NEXT_PUBLIC_SUPABASE_URL?.split('//')[1]?.split('.')[0]}-auth-token`
+        localStorage.removeItem(storageKey)
+      } catch {
+        // Ignore errors
+      }
+    }
+  }
+
+  /**
+   * Check if user is authenticated (quick check)
    */
   isAuthenticated(): boolean {
     const { accessToken } = this.retrieveTokens()
-    if (!accessToken) {
-      return false
-    }
-    const payload = decodeToken(accessToken)
-    if (!payload || !payload.exp) {
-      return false
-    }
-    return Date.now() < payload.exp
+    return !!accessToken
   }
 
   /**
-   * Get the current user's ID from token (without API call)
+   * Get the current user's ID
    */
   getCurrentUserId(): string | null {
-    const { accessToken } = this.retrieveTokens()
-    if (!accessToken) {
-      return null
+    const cachedUser = this.getCachedUser()
+    return cachedUser?.id || null
+  }
+
+  /**
+   * Listen to auth state changes
+   */
+  onAuthStateChange(callback: (event: string, session: Session | null) => void) {
+    return supabase.auth.onAuthStateChange((event, session) => {
+      callback(event, session)
+    })
+  }
+
+  /**
+   * Verify a session/token on the server side
+   * This can be used in API routes
+   */
+  async verifySession(accessToken: string): Promise<{ valid: boolean; user: SupabaseUser | null }> {
+    const { data: { user }, error } = await supabase.auth.getUser(accessToken)
+
+    if (error || !user) {
+      return { valid: false, user: null }
     }
-    const payload = decodeToken(accessToken)
-    return payload?.userId || null
+
+    // Get user profile from our users table
+    const { data: userProfile } = await supabase
+      .from('users')
+      .select('id, email, full_name, avatar_url, role, is_verified, profile_completed, created_at, updated_at')
+      .eq('id', user.id)
+      .single()
+
+    const supabaseUser: SupabaseUser = userProfile || {
+      id: user.id,
+      email: user.email!,
+      full_name: user.user_metadata?.full_name || '',
+      avatar_url: user.user_metadata?.avatar_url,
+      role: 'candidate' as UserRole,
+      is_verified: !!user.email_confirmed_at,
+      profile_completed: false,
+      created_at: user.created_at,
+      updated_at: user.updated_at || user.created_at
+    }
+
+    return { valid: true, user: supabaseUser }
   }
 }
 

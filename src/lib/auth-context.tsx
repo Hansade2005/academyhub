@@ -2,6 +2,7 @@
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { supabaseAuthService, SupabaseUser } from '@/lib/supabase-auth-service';
+import { supabase } from '@/lib/supabase-client';
 import type { UserRole } from '@/lib/t3a-types';
 
 interface AuthContextType {
@@ -59,6 +60,37 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     };
 
     checkAuth();
+
+    // Listen for Supabase auth state changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+      if (event === 'SIGNED_IN' && session) {
+        // User signed in, fetch full profile
+        const authenticatedUser = await supabaseAuthService.getAuthenticatedUser();
+        if (authenticatedUser) {
+          setUser(authenticatedUser);
+        }
+      } else if (event === 'SIGNED_OUT') {
+        // User signed out
+        setUser(null);
+      } else if (event === 'TOKEN_REFRESHED' && session) {
+        // Token was refreshed, update user if needed
+        const authenticatedUser = await supabaseAuthService.getAuthenticatedUser();
+        if (authenticatedUser) {
+          setUser(authenticatedUser);
+        }
+      } else if (event === 'USER_UPDATED' && session) {
+        // User profile was updated
+        const authenticatedUser = await supabaseAuthService.getAuthenticatedUser();
+        if (authenticatedUser) {
+          setUser(authenticatedUser);
+        }
+      }
+    });
+
+    // Cleanup subscription on unmount
+    return () => {
+      subscription.unsubscribe();
+    };
   }, []);
 
   const login = async (email: string, password: string): Promise<void> => {
