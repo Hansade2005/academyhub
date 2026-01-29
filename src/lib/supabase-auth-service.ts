@@ -121,7 +121,11 @@ class SupabaseAuthService {
       .from('users')
       .select('id, email, full_name, avatar_url, role, is_verified, profile_completed, created_at, updated_at')
       .eq('id', authData.user.id)
-      .single()
+      .maybeSingle()
+
+    if (profileError) {
+      console.error('Error fetching user profile during login:', profileError)
+    }
 
     // If profile doesn't exist, create it
     let user: SupabaseUser
@@ -192,9 +196,13 @@ class SupabaseAuthService {
       .from('users')
       .select('id, email, full_name, avatar_url, role, is_verified, profile_completed, created_at, updated_at')
       .eq('id', session.user.id)
-      .single()
+      .maybeSingle()
 
-    if (profileError || !userProfile) {
+    if (profileError) {
+      console.error('Error fetching user profile:', profileError)
+    }
+
+    if (!userProfile) {
       // Return basic user info from Supabase Auth if profile not found
       return {
         id: session.user.id,
@@ -407,7 +415,7 @@ class SupabaseAuthService {
       .from('users')
       .select('id, email, full_name, avatar_url, role, is_verified, profile_completed, created_at, updated_at')
       .eq('id', user.id)
-      .single()
+      .maybeSingle()
 
     const supabaseUser: SupabaseUser = userProfile || {
       id: user.id,

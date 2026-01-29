@@ -866,10 +866,10 @@ export const getUserAnalyticsProfile = async (userId: string) => {
       .from('user_analytics_profiles')
       .select('*')
       .eq('user_id', userId)
-      .single()
+      .maybeSingle()
 
-    if (error && error.code !== 'PGRST116') {
-      // PGRST116 = no rows found, which is OK
+    if (error) {
+      console.error('Error fetching analytics profile:', error)
       return formatSupabaseResponse({ error }, null)
     }
 
