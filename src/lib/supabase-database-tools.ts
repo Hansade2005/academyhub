@@ -17,10 +17,33 @@ import type {
 
 // Generic functions for database operations
 export const fetchTableRecords = async (tableName: string, queryParams?: any) => {
-  const { data, error } = await supabase
-    .from(tableName)
-    .select('*')
-    .maybeQueryParams(queryParams)
+  let query = supabase.from(tableName).select('*')
+
+  // Apply query parameters if provided
+  if (queryParams) {
+    // Handle filters
+    if (queryParams.filters) {
+      for (const [field, value] of Object.entries(queryParams.filters)) {
+        query = query.eq(field, value)
+      }
+    }
+
+    // Handle ordering
+    if (queryParams.orderBy) {
+      query = query.order(queryParams.orderBy.field, queryParams.orderBy.direction || 'asc')
+    }
+
+    // Handle pagination
+    if (queryParams.limit) {
+      query = query.limit(queryParams.limit)
+    }
+
+    if (queryParams.offset) {
+      query = query.range(queryParams.offset, queryParams.offset + (queryParams.limit || 10) - 1)
+    }
+  }
+
+  const { data, error } = await query
 
   if (error) {
     return formatSupabaseResponse({ error }, [])
@@ -83,7 +106,7 @@ export const queryTable = async (tableName: string, options: any = {}) => {
 
   // Apply ordering
   if (options.orderBy) {
-    query = query.order(field, options.orderBy.direction || 'asc')
+    query = query.order(options.orderBy.field, options.orderBy.direction || 'asc')
   }
 
   // Apply pagination

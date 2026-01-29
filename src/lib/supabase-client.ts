@@ -160,7 +160,9 @@ export function handleSupabaseError(error: any, defaultMessage: string = 'Operat
 }
 
 // Helper function to convert Supabase response to standard format
-export function formatSupabaseResponse<T>(response: any, data: T[]): { data: T[]; success: boolean; message: string } {
+export function formatSupabaseResponse<T>(response: any, data: T[]): { data: T[]; success: boolean; message: string }
+export function formatSupabaseResponse<T>(response: any, data: T | null): { data: T | null; success: boolean; message: string }
+export function formatSupabaseResponse<T>(response: any, data: T | T[] | null): { data: T | T[] | null; success: boolean; message: string } {
   return {
     data,
     success: response.error === null,
